@@ -1,4 +1,5 @@
-﻿using FIVES;
+﻿using ECABaseModel;
+using ECABaseModel.Prototypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace SIXPrimeLDPlugin.ldp_ttl
 
         private void CreateAttributeTriples()
         {
-            foreach (ReadOnlyAttributeDefinition a in c.Definition.AttributeDefinitions)
+            foreach (AttributePrototype a in c.Definition.AttributeDefinitions)
             {
                 string attributeUri = dp_uri + "/" + a.Name;
                 RDFGraph.Assert(new Triple(un, DCT_HAS_PART, RDFGraph.CreateUriNode(new Uri(attributeUri))));

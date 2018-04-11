@@ -1,4 +1,4 @@
-﻿using FIVES;
+﻿using ECABaseModel.Prototypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,13 +27,13 @@ namespace SIXPrimeLDPlugin.ldp_ttl
 
         private void createAttributeDefinitionsGraph()
         {
-            foreach (ReadOnlyAttributeDefinition a in componentPrototype.AttributeDefinitions)
+            foreach (AttributePrototype a in componentPrototype.AttributeDefinitions)
             {
                 createAttributeDefinitionNode(a);
             }
         }
 
-        private void createAttributeDefinitionNode(ReadOnlyAttributeDefinition a)
+        private void createAttributeDefinitionNode(AttributePrototype a)
         {
             ILiteralNode n_a = attributesGraph.CreateLiteralNode(a.Name);
             IUriNode u_a = createAttributeUriNode(a, attributesGraph);
@@ -41,7 +41,7 @@ namespace SIXPrimeLDPlugin.ldp_ttl
             attributesGraph.Assert(new Triple(u_a, RDF_VALUE, attributesGraph.CreateBlankNode(a.Name)));
         }
 
-        private IUriNode createAttributeUriNode(ReadOnlyAttributeDefinition a, Graph g)
+        private IUriNode createAttributeUriNode(AttributePrototype a, Graph g)
         {
             string attributeUri = dp_uri + "/" + a.Name;
             return g.CreateUriNode(attributeUri);
@@ -50,7 +50,7 @@ namespace SIXPrimeLDPlugin.ldp_ttl
         protected override void BuildRDFGraph()
         {
             RDFGraph.Assert(new Triple(un, RDF_TYPE, ECA_COMPONENT));
-            foreach (ReadOnlyAttributeDefinition a in componentPrototype.AttributeDefinitions)
+            foreach (AttributePrototype a in componentPrototype.AttributeDefinitions)
             {
                 IUriNode u_a = createAttributeUriNode(a, RDFGraph);
                 RDFGraph.Assert(un, DCT_HAS_PART, u_a);
