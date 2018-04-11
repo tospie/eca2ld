@@ -48,5 +48,19 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\eca-base-2015\ECABaseModel\ECABaseModel.csproj">
+      <Project>{6CE24CDB-8D1D-4A30-AB89-0EFAE9FDEF66}</Project>
+      <Name>ECABaseModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ECA2LD.csproj">
+      <Project>{58d7397f-6f85-4257-802d-2dfae88280a8}</Project>
+      <Name>ECA2LD</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\linked-datapoints\ldp-datapoints\ldp-datapoints.csproj">
+      <Project>{728A6511-26D5-481B-8A1F-98ADB0A8B311}</Project>
+      <Name>ldp-datapoints</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
