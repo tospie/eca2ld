@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VDS.RDF;
 
-namespace SIXPrimeLDPlugin.ldp_ttl
+namespace ECA2LD.ldp_ttl
 {
     public class EntityLDPGraph : BasicLDPGraph
     {
