@@ -43,8 +43,8 @@ namespace ECA2LD.ldp_ttl
 
         private IUriNode createAttributeUriNode(AttributePrototype a, Graph g)
         {
-            string attributeUri = dp_uri + "/" + a.Name;
-            return g.CreateUriNode(attributeUri);
+            string attributeUri = dp_uri.TrimEnd('/') + "/" + a.Name;
+            return g.CreateUriNode(new Uri(attributeUri));
         }
 
         protected override void BuildRDFGraph()

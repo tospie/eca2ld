@@ -44,7 +44,7 @@ namespace ECA2LD.ldp_ttl
         {
             foreach (AttributePrototype a in c.Definition.AttributeDefinitions)
             {
-                string attributeUri = dp_uri + "/" + a.Name;
+                string attributeUri = dp_uri.TrimEnd('/') + "/" + a.Name;
                 RDFGraph.Assert(new Triple(un, DCT_HAS_PART, RDFGraph.CreateUriNode(new Uri(attributeUri))));
             }
         }
