@@ -17,6 +17,10 @@ namespace ECA2LD.Datapoints
         public EntityDatapoint(Entity value, string route) : base(route)
         {
             graph = new EntityLDPGraph(new Uri(route), value);
+            foreach(Component c in value.Components)
+            {
+                ComponentDatapoint cd = new ComponentDatapoint(c, route.TrimEnd('/') + "/" + c.Name + "/");
+            }
         }
 
         protected override void onGet(object sender, HttpEventArgs e)
