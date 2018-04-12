@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Datapoints\AttributeDatapoint.cs" />
     <Compile Include="Datapoints\ComponentDatapoint.cs" />
+    <Compile Include="Datapoints\ComponentPrototypeDatapoint.cs" />
     <Compile Include="Datapoints\EntityCollectionDatapoint.cs" />
     <Compile Include="Datapoints\EntityDatapoint.cs" />
     <Compile Include="ldp-ttl\BasicLDPGraph.cs" />
