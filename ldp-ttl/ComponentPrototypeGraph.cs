@@ -10,19 +10,24 @@ namespace ECA2LD.ldp_ttl
 {
     class ComponentPrototypeGraph : BasicLDPGraph
     {
-        private ComponentDefinition componentPrototype;
+        private ComponentPrototype componentPrototype;
         private Graph attributesGraph;
         private IUriNode ECA_COMPONENT;
 
-        public ComponentPrototypeGraph(Uri u, ComponentDefinition d) : base(u)
+        public ComponentPrototypeGraph(Uri u, ComponentPrototype p) : base(u)
         {
-            componentPrototype = d;
+            componentPrototype = p;
             RDFGraph.NamespaceMap.AddNamespace("eca", new Uri("http://www.dfki.de/eca#"));
             ECA_COMPONENT = RDFGraph.CreateUriNode("eca:component");
             attributesGraph = new Graph();
+            attributesGraph.NamespaceMap.AddNamespace("rdf", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));
+            attributesGraph.NamespaceMap.AddNamespace("ldp", new Uri("http://www.w3.org/ns/ldp#"));
+            attributesGraph.NamespaceMap.AddNamespace("dct", new Uri("http://purl.org/dc/terms/"));
+            attributesGraph.NamespaceMap.AddNamespace("rdfs", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
+            attributesGraph.NamespaceMap.AddNamespace("eca", new Uri("http://www.dfki.de/eca#"));
             createAttributeDefinitionsGraph();
             BuildRDFGraph();
-            RDFGraph.Merge(attributesGraph);
+            RDFGraph.Merge(attributesGraph, false);
         }
 
         private void createAttributeDefinitionsGraph()
@@ -37,8 +42,25 @@ namespace ECA2LD.ldp_ttl
         {
             ILiteralNode n_a = attributesGraph.CreateLiteralNode(a.Name);
             IUriNode u_a = createAttributeUriNode(a, attributesGraph);
-            attributesGraph.Assert(new Triple(u_a, DCT_IDENTIFIER, n_a));
-            attributesGraph.Assert(new Triple(u_a, RDF_VALUE, attributesGraph.CreateBlankNode(a.Name)));
+            attributesGraph.Assert(new Triple(
+                u_a,
+                attributesGraph.CreateUriNode("dct:Identifier"),
+                n_a));
+
+            attributesGraph.Assert(new Triple(
+                u_a,
+                attributesGraph.CreateUriNode("rdf:Type"),
+                attributesGraph.CreateUriNode("eca:attribute")));
+
+            attributesGraph.Assert(new Triple(
+                u_a,
+                attributesGraph.CreateUriNode("rdf:Type"),
+                attributesGraph.CreateLiteralNode(a.Type.ToString(), "xsd:type")));
+
+            attributesGraph.Assert(new Triple(
+                u_a,
+                attributesGraph.CreateUriNode("rdf:Value"),
+                attributesGraph.CreateBlankNode(a.Name)));
         }
 
         private IUriNode createAttributeUriNode(AttributePrototype a, Graph g)
