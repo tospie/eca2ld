@@ -13,10 +13,12 @@ namespace ECA2LD.ldp_ttl
     {
         private Component c;
         private ILiteralNode n_c;
+        private Uri u;
 
         public ComponentLDPGraph(Uri u, Component c) : base(u)
         {
             this.c = c;
+            this.u = u;
             n_c = RDFGraph.CreateLiteralNode(c.Name, "xsd:string");
             BuildRDFGraph();
         }
@@ -28,7 +30,7 @@ namespace ECA2LD.ldp_ttl
             RDFGraph.Assert(new Triple(un, DCT_IS_PART_OF, GetContainingEntityURI()));
             RDFGraph.Assert(new Triple(un, LDP_HASMEMBERRELATION, DCT_HAS_PART));
 
-            Uri definedByUri = new Uri(SIXPrimeLDPluginInitializer.baseUri.ToString() + "prototypes/" + c.Name);
+            var definedByUri = new Uri(u.getPrototypeBaseUri() + c.Name + "/");
             RDFGraph.Assert(new Triple(un, RDFS_IS_DEFINED_BY, RDFGraph.CreateUriNode(definedByUri)));
 
             CreateAttributeTriples();
