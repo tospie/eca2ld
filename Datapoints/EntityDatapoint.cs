@@ -21,6 +21,9 @@ namespace ECA2LD.Datapoints
             {
                 ComponentDatapoint cd = new ComponentDatapoint(c, route.TrimEnd('/') + "/" + c.Name + "/");
             }
+            value.CreatedComponent += (o,e) => {
+                new ComponentDatapoint(e.Component, route.TrimEnd('/') + "/" + e.Component.Name + "/");
+            };
         }
 
         protected override void onGet(object sender, HttpEventArgs e)
