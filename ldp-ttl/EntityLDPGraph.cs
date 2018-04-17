@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VDS.RDF;
 
-namespace SIXPrimeLDPlugin.ldp_ttl
+namespace ECA2LD.ldp_ttl
 {
     public class EntityLDPGraph : BasicLDPGraph
     {
@@ -32,7 +32,7 @@ namespace SIXPrimeLDPlugin.ldp_ttl
         {
             foreach (Component c in e.Components)
             {
-                var componentUri = new Uri(dp_uri + "/" + c.Name);
+                var componentUri = new Uri(dp_uri.TrimEnd('/') + "/" + c.Name);
                 RDFGraph.Assert(new Triple(un, DCT_HAS_PART, RDFGraph.CreateUriNode(componentUri)));
             }
         }

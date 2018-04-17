@@ -1,29 +1,22 @@
-﻿using ECA2LD.ldp_ttl;
-using ECABaseModel;
-using LDPDatapoints;
-using LDPDatapoints.Resources;
+﻿using LDPDatapoints.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LDPDatapoints;
+using ECABaseModel.Prototypes;
+using ECA2LD.ldp_ttl;
 
 namespace ECA2LD.Datapoints
 {
-    public class EntityDatapoint : Resource
+    class ComponentPrototypeDatapoint : Resource
     {
-        EntityLDPGraph graph;
+        ComponentPrototypeGraph graph;
 
-        public EntityDatapoint(Entity value, string route) : base(route)
+        public ComponentPrototypeDatapoint(ComponentPrototype p, string route) : base(route)
         {
-            graph = new EntityLDPGraph(new Uri(route), value);
-            foreach(Component c in value.Components)
-            {
-                ComponentDatapoint cd = new ComponentDatapoint(c, route.TrimEnd('/') + "/" + c.Name + "/");
-            }
-            value.CreatedComponent += (o,e) => {
-                new ComponentDatapoint(e.Component, route.TrimEnd('/') + "/" + e.Component.Name + "/");
-            };
+            graph = new ComponentPrototypeGraph(new Uri(route), p);
         }
 
         protected override void onGet(object sender, HttpEventArgs e)

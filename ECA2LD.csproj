@@ -57,12 +57,16 @@
   <ItemGroup>
     <Compile Include="Datapoints\AttributeDatapoint.cs" />
     <Compile Include="Datapoints\ComponentDatapoint.cs" />
+    <Compile Include="Datapoints\ComponentPrototypeDatapoint.cs" />
+    <Compile Include="Datapoints\EntityCollectionDatapoint.cs" />
     <Compile Include="Datapoints\EntityDatapoint.cs" />
+    <Compile Include="ldp-ttl\AttributeLDPGraph.cs" />
     <Compile Include="ldp-ttl\BasicLDPGraph.cs" />
     <Compile Include="ldp-ttl\ComponentLDPGraph.cs" />
     <Compile Include="ldp-ttl\ComponentPrototypeGraph.cs" />
     <Compile Include="ldp-ttl\EntityLDPGraph.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
