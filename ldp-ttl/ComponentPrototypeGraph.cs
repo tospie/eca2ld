@@ -23,11 +23,11 @@ namespace ECA2LD.ldp_ttl
 {
     class ComponentPrototypeGraph : BasicLDPGraph
     {
-        private ComponentPrototype componentPrototype;
+        private ReadOnlyComponentPrototype componentPrototype;
         private Graph attributesGraph;
         private IUriNode ECA_COMPONENT;
 
-        public ComponentPrototypeGraph(Uri u, ComponentPrototype p) : base(u)
+        public ComponentPrototypeGraph(Uri u, ReadOnlyComponentPrototype p) : base(u)
         {
             componentPrototype = p;
             RDFGraph.NamespaceMap.AddNamespace("eca", new Uri("http://www.dfki.de/eca#"));
@@ -38,20 +38,20 @@ namespace ECA2LD.ldp_ttl
             attributesGraph.NamespaceMap.AddNamespace("dct", new Uri("http://purl.org/dc/terms/"));
             attributesGraph.NamespaceMap.AddNamespace("rdfs", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
             attributesGraph.NamespaceMap.AddNamespace("eca", new Uri("http://www.dfki.de/eca#"));
-            createAttributeDefinitionsGraph();
+            createAttributePrototypesGraph();
             BuildRDFGraph();
             RDFGraph.Merge(attributesGraph, false);
         }
 
-        private void createAttributeDefinitionsGraph()
+        private void createAttributePrototypesGraph()
         {
             foreach (AttributePrototype a in componentPrototype.AttributePrototypes)
             {
-                createAttributeDefinitionNode(a);
+                createAttributePrototypeNode(a);
             }
         }
 
-        private void createAttributeDefinitionNode(AttributePrototype a)
+        private void createAttributePrototypeNode(AttributePrototype a)
         {
             ILiteralNode n_a = attributesGraph.CreateLiteralNode(a.Name);
             IUriNode u_a = createAttributeUriNode(a, attributesGraph);
