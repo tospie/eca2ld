@@ -27,7 +27,7 @@ namespace ECA2LD.Datapoints
     {
         ComponentPrototypeGraph graph;
 
-        public ComponentPrototypeDatapoint(ComponentPrototype p, string route) : base(route)
+        public ComponentPrototypeDatapoint(ReadOnlyComponentPrototype p, string route) : base(route)
         {
             graph = new ComponentPrototypeGraph(new Uri(route), p);
         }
