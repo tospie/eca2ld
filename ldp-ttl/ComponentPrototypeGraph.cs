@@ -45,7 +45,7 @@ namespace ECA2LD.ldp_ttl
 
         private void createAttributeDefinitionsGraph()
         {
-            foreach (AttributePrototype a in componentPrototype.AttributeDefinitions)
+            foreach (AttributePrototype a in componentPrototype.AttributePrototypes)
             {
                 createAttributeDefinitionNode(a);
             }
@@ -85,7 +85,7 @@ namespace ECA2LD.ldp_ttl
         protected override void BuildRDFGraph()
         {
             RDFGraph.Assert(new Triple(un, RDF_TYPE, ECA_COMPONENT));
-            foreach (AttributePrototype a in componentPrototype.AttributeDefinitions)
+            foreach (AttributePrototype a in componentPrototype.AttributePrototypes)
             {
                 IUriNode u_a = createAttributeUriNode(a, RDFGraph);
                 RDFGraph.Assert(un, DCT_HAS_PART, u_a);

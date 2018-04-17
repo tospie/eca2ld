@@ -57,7 +57,7 @@ namespace ECA2LD.ldp_ttl
 
         private void CreateAttributeTriples()
         {
-            foreach (AttributePrototype a in c.Definition.AttributeDefinitions)
+            foreach (AttributePrototype a in c.Prototype.AttributePrototypes)
             {
                 string attributeUri = dp_uri.TrimEnd('/') + "/" + a.Name;
                 RDFGraph.Assert(new Triple(un, DCT_HAS_PART, RDFGraph.CreateUriNode(new Uri(attributeUri))));

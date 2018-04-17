@@ -33,9 +33,9 @@ namespace ECA2LD.ldp_ttl
         protected override void BuildRDFGraph()
         {
             RDFGraph.Assert(new Triple(un, RDF_TYPE, LDP_RDF_RESOURCE));
-            RDFGraph.Assert(new Triple(un, DCT_IDENTIFIER, RDFGraph.CreateLiteralNode(attribute.Definition.Name, "xsd:string")));
+            RDFGraph.Assert(new Triple(un, DCT_IDENTIFIER, RDFGraph.CreateLiteralNode(attribute.Prototype.Name, "xsd:string")));
 
-            string compUri = dp_uri.Replace("/" + attribute.Definition.Name, "");
+            string compUri = dp_uri.Replace("/" + attribute.Prototype.Name, "");
             RDFGraph.Assert(new Triple(un, DCT_IS_PART_OF, RDFGraph.CreateUriNode(new Uri(compUri))));
             string valuestring = attribute?.Value?.ToString() ?? "null";
             RDFGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateLiteralNode(valuestring, attribute.Type.transformTypeToString())));
