@@ -22,12 +22,21 @@ using ECA2LD.ldp_ttl;
 
 namespace ECA2LD.Datapoints
 {
+    /// <summary>
+    /// Creates an ECA2LD HTTP / RDF endpoint around an <seealso cref="ECABaseModel.Attribute"/>
+    /// </summary>
     class AttributeDatapoint : Resource
     {
         AttributeLDPGraph graph;
-        public AttributeDatapoint(ECABaseModel.Attribute attribute, string route) : base(route)
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="attribute"><seealso cref="ECABaseModel.Attribute"/> that is to be represented by the RDF endpoint</param>
+        /// <param name="uri">Endpoint listener URI</param>
+        public AttributeDatapoint(ECABaseModel.Attribute attribute, string uri) : base(uri)
         {
-            graph = new AttributeLDPGraph(new Uri(route), attribute);
+            graph = new AttributeLDPGraph(new Uri(uri), attribute);
         }
 
         protected override void onGet(object sender, HttpEventArgs e)

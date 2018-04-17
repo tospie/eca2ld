@@ -25,21 +25,29 @@ using System.Net;
 
 namespace ECA2LD.Datapoints
 {
+    /// <summary>
+    /// Creates an ECA2LD HTTP / RDF endpoint around an <seealso cref="ECABaseModel.Component"/>
+    /// </summary>
     class ComponentDatapoint : Resource
     {
         private ComponentLDPGraph graph;
 
-        public ComponentDatapoint(Component component, string route) : base(route)
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="component"><seealso cref="ECABaseModel.Component"/> that is to be represented by the RDF endpoint</param>
+        /// <param name="uri">Endpoint listener URI</param>
+        public ComponentDatapoint(Component component, string uri) : base(uri)
         {
-            graph = new ComponentLDPGraph(new Uri(route), component);
+            graph = new ComponentLDPGraph(new Uri(uri), component);
             try
             {
-                new ComponentPrototypeDatapoint(component.Definition, new Uri(route).getPrototypeBaseUri() + component.Name + "/");
+                new ComponentPrototypeDatapoint(component.Prototype, new Uri(uri).getPrototypeBaseUri() + component.Name + "/");
             }
             catch (HttpListenerException) { }
-            foreach (AttributePrototype a in component.Definition.AttributeDefinitions)
+            foreach (AttributePrototype a in component.Prototype.AttributePrototypes)
             {
-                new AttributeDatapoint(component[a.Name], route.TrimEnd('/') + "/" + a.Name);
+                new AttributeDatapoint(component[a.Name], uri.TrimEnd('/') + "/" + a.Name);
             }
         }
 
