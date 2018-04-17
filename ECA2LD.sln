@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2011
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECA2LD", "ECA2LD.csproj", "{58D7397F-6F85-4257-802D-2DFAE88280A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECABaseModel", "eca-base-2015\ECABaseModel\ECABaseModel.csproj", "{6CE24CDB-8D1D-4A30-AB89-0EFAE9FDEF66}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ldp-datapoints", "linked-datapoints\ldp-datapoints\ldp-datapoints.csproj", "{728A6511-26D5-481B-8A1F-98ADB0A8B311}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleServer", "ExampleServer\ExampleServer.csproj", "{7B100919-326B-40A4-927D-C21B8F88F6B2}"
 EndProject
@@ -23,6 +25,10 @@ Global
 		{6CE24CDB-8D1D-4A30-AB89-0EFAE9FDEF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CE24CDB-8D1D-4A30-AB89-0EFAE9FDEF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CE24CDB-8D1D-4A30-AB89-0EFAE9FDEF66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728A6511-26D5-481B-8A1F-98ADB0A8B311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728A6511-26D5-481B-8A1F-98ADB0A8B311}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728A6511-26D5-481B-8A1F-98ADB0A8B311}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728A6511-26D5-481B-8A1F-98ADB0A8B311}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7B100919-326B-40A4-927D-C21B8F88F6B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B100919-326B-40A4-927D-C21B8F88F6B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B100919-326B-40A4-927D-C21B8F88F6B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -30,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {415F20FE-8C25-4512-8AE8-7BCA51EB5888}
 	EndGlobalSection
 EndGlobal

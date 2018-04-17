@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>58d7397f-6f85-4257-802d-2dfae88280a8</ProjectGuid>
+    <ProjectGuid>{58D7397F-6F85-4257-802D-2DFAE88280A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ECA2LD</RootNamespace>
@@ -75,6 +75,10 @@
     <ProjectReference Include="eca-base-2015\ECABaseModel\ECABaseModel.csproj">
       <Project>{6ce24cdb-8d1d-4a30-ab89-0efae9fdef66}</Project>
       <Name>ECABaseModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="linked-datapoints\ldp-datapoints\ldp-datapoints.csproj">
+      <Project>{728a6511-26d5-481b-8a1f-98adb0a8b311}</Project>
+      <Name>ldp-datapoints</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
