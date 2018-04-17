@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ECABaseModel.Prototypes;
 
 namespace ExampleServer
 {
@@ -26,8 +27,35 @@ namespace ExampleServer
     {
         static void Main(string[] args)
         {
-            Entity testEntity = new Entity();
-            var eDP = new EntityDatapoint(testEntity, "http://localhost:12345/entities/e/");
+            // Define a component with custom name. This name will be used to access the component on any entity.
+            ComponentPrototype p = new ComponentPrototype("component");
+
+            // Add a set of attributes. The names are used to access the attributes on instatiated components
+            p.AddAttribute<float>("numeric");
+            p.AddAttribute<string>("string");
+            p.AddAttribute<bool>("boolean");
+
+            // Once the protoype and its set of attributes is defined, register it to the global Component Registry
+            ComponentRegistry.Instance.Register(p);
+
+            // We are now all set to use our defined component on entities. For this, first, we create a new empty entity.
+            Entity e = new Entity();
+
+            // Components are automatically instatiated on first access. So we can just set the values on our entity as follow:
+            e["component"]["numeric"].Set(3.14);
+            e["component"]["string"].Set("Hello World");
+            e["component"]["boolean"].Set(true);
+
+            // Last, we expose our entity on an HTTP datapoint as Linked Data object. The ECA2LD lib will take care of building the correct
+            // RDF graph, and creating and wiring datapoints for the linked component and attribute instances.
+            var eDP = new EntityDatapoint(e, "http://localhost:12345/entities/e/");
+
+            // Our entity is now ready and set to be added to the world. The attributes could have been set as above afterwards as well.
+            // Then events would have informed other parts of the program that our entity was changed.
+            CEC.Instance.Add(e);
+
+            // This concludes the example. In the future, support to add datapoints on the Entity Collection should be implemented. This
+            // would automatize the process of creating datapoints for each entity manually.
             Console.ReadKey();
         }
     }
