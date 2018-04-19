@@ -1,6 +1,6 @@
-[submodule "eca-base-2015"]
-	path = eca-base-2015
-	url = ssh://git@iceland.sb.dfki.de:7998/synch/eca-base-2015.git
+[submodule "eca-base-model"]
+	path = eca-base-model
+	url = git@github.com/eca-base-model.git
 [submodule "linked-datapoints"]
 	path = linked-datapoints
-	url = ssh://git@iceland.sb.dfki.de:7998/synch/linked-datapoints.git
+	url = git@github.com/linked-datapoints.git
