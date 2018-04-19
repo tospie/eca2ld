@@ -1,6 +1,6 @@
 [submodule "eca-base-model"]
 	path = eca-base-model
-	url = git@github.com/eca-base-model.git
+	url = git@github.com:tospie/eca-base-model.git
 [submodule "linked-datapoints"]
 	path = linked-datapoints
-	url = git@github.com/linked-datapoints.git
+	url = git@github.com:tospie/linked-datapoints.git
