@@ -38,7 +38,7 @@ namespace ECA2LD.ldp_ttl
             string compUri = dp_uri.Replace("/" + attribute.Prototype.Name, "");
             RDFGraph.Assert(new Triple(un, DCT_IS_PART_OF, RDFGraph.CreateUriNode(new Uri(compUri))));
             string valuestring = attribute?.Value?.ToString() ?? "null";
-            RDFGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateLiteralNode(valuestring, attribute.Type.transformTypeToString())));
+            RDFGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateUriNode(new Uri(dp_uri + "/value/"))));
         }
     }
 }
