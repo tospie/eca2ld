@@ -27,6 +27,31 @@ namespace ExampleServer
     {
         static void Main(string[] args)
         {
+            string host = "localhost";
+            string port = "12345";
+
+            if (args.Length > 0)
+                if (args.Length != 2)
+                    Console.WriteLine("Please supply exactly two arguments for host configuration: <hostname> <port>. Using default values <localhost> <12345>.");
+                else
+                {
+                    host = args[0];
+                    port = args[1];
+                    try
+                    {
+                        var uri = new Uri("http://" + host + ":" + port + "/entities/");
+                    }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine("Supplied arguments {0}, {1} do not form a valid host specifaction. Using default vaules <localhost> <12345>.", args[0], args[1]);
+                        host = "localhost";
+                        port = "12345";
+                    }
+                }
+
+            string basePath = "http://" + host + ":" + port + "/entities/";
+
+            Console.WriteLine("Entities are hosted at " + basePath);
             SpatialEntityComponent.RegisterComponents();
             GeometryComponent.Register();
 
@@ -36,9 +61,9 @@ namespace ExampleServer
 
             // Last, we expose our entity on an HTTP datapoint as Linked Data object. The ECA2LD lib will take care of building the correct
             // RDF graph, and creating and wiring datapoints for the linked component and attribute instances.
-            var tischDP = new EntityDatapoint(tisch, "http://localhost:12345/entities/tisch/");
-            var schraubDP = new EntityDatapoint(schrauber, "http://localhost:12345/entities/schrauber/");
-            var workerDP = new EntityDatapoint(worker, "http://localhost:12345/entities/worker/");
+            var tischDP = new EntityDatapoint(tisch, basePath + "tisch/");
+            var schraubDP = new EntityDatapoint(schrauber, basePath + "schrauber/");
+            var workerDP = new EntityDatapoint(worker, basePath + "worker/");
 
             // Our entity is now ready and set to be added to the world. The attributes could have been set as above afterwards as well.
             // Then events would have informed other parts of the program that our entity was changed.
@@ -48,6 +73,7 @@ namespace ExampleServer
 
             // This concludes the example. In the future, support to add datapoints on the Entity Collection should be implemented. This
             // would automatize the process of creating datapoints for each entity manually.
+            Console.WriteLine("\n\n Press Key to shutdown");
             Console.ReadKey();
         }
 
