@@ -30,26 +30,6 @@ namespace ExampleServer
             SpatialEntityComponent.RegisterComponents();
             GeometryComponent.Register();
 
-            // Define a component with custom name. This name will be used to access the component on any entity.
-            ComponentPrototype p = new ComponentPrototype("component");
-
-            // Add a set of attributes. The names are used to access the attributes on instatiated components
-            p.AddAttribute<float>("numeric");
-            p.AddAttribute<string>("string");
-            p.AddAttribute<bool>("boolean");
-
-            // Once the protoype and its set of attributes is defined, register it to the global Component Registry
-            ComponentRegistry.Instance.Register(p);
-
-            // We are now all set to use our defined component on entities. For this, first, we create a new empty entity.
-            Entity e = new Entity();
-
-            // Components are automatically instatiated on first access. So we can just set the values on our entity as follow:
-            e["component"]["numeric"].Set(3.14f);
-            e["component"]["string"].Set("Hello World");
-            e["component"]["boolean"].Set(true);
-
-
             var tisch = buildTisch();
             var schrauber = buildSchrauber();
             // Last, we expose our entity on an HTTP datapoint as Linked Data object. The ECA2LD lib will take care of building the correct
@@ -60,7 +40,6 @@ namespace ExampleServer
 
             // Our entity is now ready and set to be added to the world. The attributes could have been set as above afterwards as well.
             // Then events would have informed other parts of the program that our entity was changed.
-            CEC.Instance.Add(e);
             CEC.Instance.Add(tisch);
             CEC.Instance.Add(schrauber);
 
