@@ -30,11 +30,6 @@ namespace ExampleServer
             SpatialEntityComponent.RegisterComponents();
             GeometryComponent.Register();
 
-            Entity s = new Entity();
-            s["spatial"]["position"].Set(new SpatialEntityComponent.position { x = 0, y = 0, z = 0 });
-            s["spatial"]["orientation"].Set(new SpatialEntityComponent.orientation { x = 0, y = 0, z = 1, w = 0 });
-            s["spatial"]["id"].Set("AkkuSchrauber");
-
             // Define a component with custom name. This name will be used to access the component on any entity.
             ComponentPrototype p = new ComponentPrototype("component");
 
@@ -54,26 +49,33 @@ namespace ExampleServer
             e["component"]["string"].Set("Hello World");
             e["component"]["boolean"].Set(true);
 
+
+            var tisch = buildTisch();
+            // Last, we expose our entity on an HTTP datapoint as Linked Data object. The ECA2LD lib will take care of building the correct
+            // RDF graph, and creating and wiring datapoints for the linked component and attribute instances.
+            var eDP = new EntityDatapoint(e, "http://localhost:12345/entities/e/");
+            var tischDP = new EntityDatapoint(tisch, "http://localhost:12345/entities/tisch/");
+
+            // Our entity is now ready and set to be added to the world. The attributes could have been set as above afterwards as well.
+            // Then events would have informed other parts of the program that our entity was changed.
+            CEC.Instance.Add(e);
+            CEC.Instance.Add(tisch);
+
+            // This concludes the example. In the future, support to add datapoints on the Entity Collection should be implemented. This
+            // would automatize the process of creating datapoints for each entity manually.
+            Console.ReadKey();
+        }
+        private static Entity buildTisch()
+        {
+            var s = new Entity();
             s["spatial"]["position"].Set(new SpatialEntityComponent.position { x = 4.12, y = 0.21, z = 0 });
             s["spatial"]["orientation"].Set(new SpatialEntityComponent.orientation { x = 0, y = 0, z = 1, w = 0 });
             s["spatial"]["id"].Set("shop-floor-constTable-01AWX");
 
             s["geometry"]["binaryMesh"].Set(new byte[1] { 0 });
             s["geometry"]["filetype"].Set("3dfile");
-
-            // Last, we expose our entity on an HTTP datapoint as Linked Data object. The ECA2LD lib will take care of building the correct
-            // RDF graph, and creating and wiring datapoints for the linked component and attribute instances.
-            var eDP = new EntityDatapoint(e, "http://localhost:12345/entities/e/");
-            var sDP = new EntityDatapoint(s, "http://localhost:12345/entities/tisch/");
-
-            // Our entity is now ready and set to be added to the world. The attributes could have been set as above afterwards as well.
-            // Then events would have informed other parts of the program that our entity was changed.
-            CEC.Instance.Add(e);
-            CEC.Instance.Add(s);
-
-            // This concludes the example. In the future, support to add datapoints on the Entity Collection should be implemented. This
-            // would automatize the process of creating datapoints for each entity manually.
-            Console.ReadKey();
+            return s;
         }
+
     }
 }
