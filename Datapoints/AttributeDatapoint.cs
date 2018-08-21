@@ -19,6 +19,8 @@ using System.Text;
 using System.Threading.Tasks;
 using LDPDatapoints;
 using ECA2LD.ldp_ttl;
+using System.Reflection;
+using LDPDatapoints.Subscriptions;
 
 namespace ECA2LD.Datapoints
 {
@@ -28,6 +30,7 @@ namespace ECA2LD.Datapoints
     class AttributeDatapoint : Resource
     {
         AttributeLDPGraph graph;
+        object valueResource;
 
         /// <summary>
         /// Constructor.
@@ -37,6 +40,12 @@ namespace ECA2LD.Datapoints
         public AttributeDatapoint(ECABaseModel.Attribute attribute, string uri) : base(uri)
         {
             graph = new AttributeLDPGraph(new Uri(uri), attribute);
+            Type valueResourceType = typeof(ValueResource<>).MakeGenericType(attribute.Type);
+            WebsocketSubscription ws = new WebsocketSubscription(uri.Replace("http", "ws") + "/ws/");
+            ConstructorInfo constructor = valueResourceType.GetConstructor(new Type[] { attribute.Type, typeof(string) });
+            valueResource = constructor.Invoke(new object[] { attribute.Value, (uri + "/value/") });
+            MethodInfo subscribe = valueResourceType.GetMethod("Subscribe");
+            subscribe.Invoke(valueResource, new object[] { ws });
         }
 
         protected override void onGet(object sender, HttpEventArgs e)
