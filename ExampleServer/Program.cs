@@ -36,7 +36,6 @@ namespace ExampleServer
 
             // Last, we expose our entity on an HTTP datapoint as Linked Data object. The ECA2LD lib will take care of building the correct
             // RDF graph, and creating and wiring datapoints for the linked component and attribute instances.
-            var eDP = new EntityDatapoint(e, "http://localhost:12345/entities/e/");
             var tischDP = new EntityDatapoint(tisch, "http://localhost:12345/entities/tisch/");
             var schraubDP = new EntityDatapoint(schrauber, "http://localhost:12345/entities/schrauber/");
             var workerDP = new EntityDatapoint(worker, "http://localhost:12345/entities/worker/");
