@@ -52,14 +52,16 @@ namespace ECA2LD.Datapoints
         {
             graph = new EntityLDPGraph(new Uri(route), value);
             value.SetDatapoint(this);
-            foreach(Component c in value.Components)
+            foreach (Component c in value.Components)
             {
                 ComponentDatapoint cd = new ComponentDatapoint(c, route.TrimEnd('/') + "/" + c.Name + "/");
             }
-            value.CreatedComponent += (o,e) => {
+            value.CreatedComponent += (o, e) =>
+            {
                 new ComponentDatapoint(e.Component, route.TrimEnd('/') + "/" + e.Component.Name + "/");
             };
         }
+
 
         protected override void onGet(object sender, HttpEventArgs e)
         {
