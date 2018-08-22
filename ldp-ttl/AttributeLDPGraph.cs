@@ -30,15 +30,26 @@ namespace ECA2LD.ldp_ttl
             BuildRDFGraph();
         }
 
+        public AttributeLDPGraph(Uri u, ECABaseModel.Attribute a, string EntityUri) : base(u)
+        {
+            attribute = a;
+            buildRDFBaseGraph();
+            RDFGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateUriNode(new Uri(EntityUri))));
+        }
+
         protected override void BuildRDFGraph()
+        {
+            buildRDFBaseGraph();
+            RDFGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateUriNode(new Uri(dp_uri + "/value/"))));
+        }
+
+        private void buildRDFBaseGraph()
         {
             RDFGraph.Assert(new Triple(un, RDF_TYPE, LDP_RDF_RESOURCE));
             RDFGraph.Assert(new Triple(un, DCT_IDENTIFIER, RDFGraph.CreateLiteralNode(attribute.Prototype.Name, "xsd:string")));
 
             string compUri = dp_uri.Replace("/" + attribute.Prototype.Name, "");
             RDFGraph.Assert(new Triple(un, DCT_IS_PART_OF, RDFGraph.CreateUriNode(new Uri(compUri))));
-            string valuestring = attribute?.Value?.ToString() ?? "null";
-            RDFGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateUriNode(new Uri(dp_uri + "/value/"))));
         }
     }
 }
