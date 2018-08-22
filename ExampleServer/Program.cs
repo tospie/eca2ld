@@ -41,7 +41,7 @@ namespace ExampleServer
                     {
                         var uri = new Uri("http://" + host + ":" + port + "/entities/");
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Console.WriteLine("Supplied arguments {0}, {1} do not form a valid host specifaction. Using default vaules <localhost> <12345>.", args[0], args[1]);
                         host = "localhost";
@@ -68,11 +68,13 @@ namespace ExampleServer
             var workerDP = new EntityDatapoint(worker, basePath + "worker/");
             var robotDP = new EntityDatapoint(robot, basePath + "robot/");
 
+            var worldDatapoint = new EntityCollectionDatapoint(CEC.Instance, basePath);
             // Our entity is now ready and set to be added to the world. The attributes could have been set as above afterwards as well.
             // Then events would have informed other parts of the program that our entity was changed.
             CEC.Instance.Add(tisch);
             CEC.Instance.Add(schrauber);
             CEC.Instance.Add(worker);
+            CEC.Instance.Add(robot);
 
             // This concludes the example. In the future, support to add datapoints on the Entity Collection should be implemented. This
             // would automatize the process of creating datapoints for each entity manually.
@@ -122,6 +124,8 @@ namespace ExampleServer
             var platform = new Entity();
             arm["spatial"]["id"].Set("RobotArm");
             platform["spatial"]["id"].Set("Platform");
+            CEC.Instance.Add(arm);
+            CEC.Instance.Add(platform);
 
             r["robot"]["arm"].Set(arm);
             r["robot"]["platform"].Set(platform);
