@@ -23,6 +23,27 @@ using System.Threading.Tasks;
 
 namespace ECA2LD.Datapoints
 {
+
+    internal static class EntityDatapointManager
+    {
+        private static Dictionary<Guid, EntityDatapoint> datapoints = new Dictionary<Guid, EntityDatapoint>();
+
+        public static void SetDatapoint(this Entity entity, EntityDatapoint datapoint)
+        {
+            datapoints.Add(entity.Guid, datapoint);
+        }
+
+        public static EntityDatapoint GetDatapoint(this Entity entity)
+        {
+            return datapoints[entity.Guid];
+        }
+
+        public static bool HasDatapoint(this Entity entity)
+        {
+            return datapoints.ContainsKey(entity.Guid);
+        }
+    }
+
     public class EntityDatapoint : Resource
     {
         EntityLDPGraph graph;
