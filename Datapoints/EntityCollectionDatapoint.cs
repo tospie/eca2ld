@@ -11,6 +11,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using ECA2LD.ldp_ttl;
 using ECABaseModel;
 using LDPDatapoints;
 using LDPDatapoints.Resources;
@@ -19,19 +20,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDS.RDF;
 
 namespace ECA2LD.Datapoints
 {
-    class EntityCollectionDatapoint : ValueResource<EntityCollection>
+    public class EntityCollectionDatapoint : CollectionResource<EntityCollection, Entity>
     {
-        public EntityCollectionDatapoint(EntityCollection value, string route) : base(value, route)
+        EntityCollectionLDPGraph graph;
+        string route;
+
+        public EntityCollectionDatapoint(EntityCollection collection, string route) : base(collection, route)
         {
-            throw new NotImplementedException("Enity Collection Datapoints are not yet implemented");
+            graph = new EntityCollectionLDPGraph(new Uri(route), collection);
+            this.route = route;
+
+            lock (collection)
+            {
+                foreach (Entity e in collection)
+                {
+                    createDatapointOnEntity(e);
+                }
+            }
+
+            collection.AddedEntity += (o, e) => createDatapointOnEntity(e.Entity);
+        }
+
+        private void createDatapointOnEntity(Entity e)
+        {
+            if (!e.HasDatapoint())
+            {
+                var entityDatapoint = new EntityDatapoint(e, route.TrimEnd('/') + "/" + e.Guid + "/");
+            }
         }
 
         protected override void onGet(object sender, HttpEventArgs e)
-        {            
-            base.onGet(sender, e);
+        {
+            string graphAsTTL = graph.GetTTL();
+            e.response.OutputStream.Write(Encoding.UTF8.GetBytes(graphAsTTL), 0, graphAsTTL.Length);
+            e.response.OutputStream.Flush();
+            e.response.OutputStream.Close();
         }
     }
 }
