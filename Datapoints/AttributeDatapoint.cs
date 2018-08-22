@@ -42,6 +42,14 @@ namespace ECA2LD.Datapoints
             // In case we store an Entity as attribute, the resulting Resource should rather point to the datapoint that is created for it.
             bool isEntity = attribute.Type.Equals(typeof(ECABaseModel.Entity));
 
+            // In case that the attribute contains another entity, we have to check whether there is already a Datapoint set up for it. If not,
+            // we take care of this here. This follows the idea of automatic recursive Datapoint generation.
+            if (isEntity && !((ECABaseModel.Entity)attribute.Value).HasDatapoint())
+            {
+                ECABaseModel.Entity child = (ECABaseModel.Entity)attribute.Value;
+                var childEntityDP = new EntityDatapoint(child, this.Route + "/" + child.Guid + "/");
+            }
+
 
             // if we have any other type of attribute, we go on to generate a datapoint for the attribute value based on the type of the attribute by
             // reflection
