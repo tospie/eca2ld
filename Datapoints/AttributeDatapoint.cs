@@ -47,7 +47,13 @@ namespace ECA2LD.Datapoints
             if (isEntity && !((ECABaseModel.Entity)attribute.Value).HasDatapoint())
             {
                 ECABaseModel.Entity child = (ECABaseModel.Entity)attribute.Value;
-                var childEntityDP = new EntityDatapoint(child, this.Route + "/" + child.Guid + "/");
+                var childEntityDP = new EntityDatapoint(child, this.Route.TrimEnd('/') + "/" + child.Guid + "/");
+                var childGraph = childEntityDP.graph.RDFGraph;
+                childGraph.Assert(new VDS.RDF.Triple(
+                    childGraph.CreateUriNode(new Uri(this.Route.TrimEnd('/') + "/" + child.Guid + "/")),
+                    childGraph.CreateUriNode("dct:isPartOf"),
+                    childGraph.CreateUriNode(new Uri(attribute.ParentComponent.ContainingEntity.GetDatapoint().Route))
+                    ));
             }
 
             // The RDF Graph vor the Attribute Node needs to point to this entity resource accordingly, instead of assuming a separate
