@@ -39,13 +39,22 @@ namespace ECA2LD.Datapoints
         /// <param name="uri">Endpoint listener URI</param>
         public AttributeDatapoint(ECABaseModel.Attribute attribute, string uri) : base(uri)
         {
-            graph = new AttributeLDPGraph(new Uri(uri), attribute);
-            Type valueResourceType = typeof(ValueResource<>).MakeGenericType(attribute.Type);
-            WebsocketSubscription ws = new WebsocketSubscription(uri.Replace("http", "ws") + "/ws/");
-            ConstructorInfo constructor = valueResourceType.GetConstructor(new Type[] { attribute.Type, typeof(string) });
-            valueResource = constructor.Invoke(new object[] { attribute.Value, (uri + "/value/") });
-            MethodInfo subscribe = valueResourceType.GetMethod("Subscribe");
-            subscribe.Invoke(valueResource, new object[] { ws });
+            // In case we store an Entity as attribute, the resulting Resource should rather point to the datapoint that is created for it.
+            bool isEntity = attribute.Type.Equals(typeof(ECABaseModel.Entity));
+
+
+            // if we have any other type of attribute, we go on to generate a datapoint for the attribute value based on the type of the attribute by
+            // reflection
+            if (!isEntity)
+            {
+                Type valueResourceType = typeof(ValueResource<>).MakeGenericType(attribute.Type);
+
+                WebsocketSubscription ws = new WebsocketSubscription(uri.Replace("http", "ws") + "/ws/");
+                ConstructorInfo constructor = valueResourceType.GetConstructor(new Type[] { attribute.Type, typeof(string) });
+                valueResource = constructor.Invoke(new object[] { attribute.Value, (uri + "/value/") });
+                MethodInfo subscribe = valueResourceType.GetMethod("Subscribe");
+                subscribe.Invoke(valueResource, new object[] { ws });
+            }
         }
 
         protected override void onGet(object sender, HttpEventArgs e)
