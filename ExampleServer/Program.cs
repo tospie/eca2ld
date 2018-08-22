@@ -54,16 +54,19 @@ namespace ExampleServer
             Console.WriteLine("Entities are hosted at " + basePath);
             SpatialEntityComponent.RegisterComponents();
             GeometryComponent.Register();
+            RobotComponent.Register();
 
             var tisch = buildTisch();
             var schrauber = buildSchrauber();
             var worker = birthWorker();
+            var robot = assembleRobot(basePath);
 
             // Last, we expose our entity on an HTTP datapoint as Linked Data object. The ECA2LD lib will take care of building the correct
             // RDF graph, and creating and wiring datapoints for the linked component and attribute instances.
             var tischDP = new EntityDatapoint(tisch, basePath + "tisch/");
             var schraubDP = new EntityDatapoint(schrauber, basePath + "schrauber/");
             var workerDP = new EntityDatapoint(worker, basePath + "worker/");
+            var robotDP = new EntityDatapoint(robot, basePath + "robot/");
 
             // Our entity is now ready and set to be added to the world. The attributes could have been set as above afterwards as well.
             // Then events would have informed other parts of the program that our entity was changed.
@@ -109,6 +112,23 @@ namespace ExampleServer
             s["spatial"]["id"].Set("worker");
 
             return s;
+        }
+
+        private static Entity assembleRobot(string basePath)
+        {
+            var r = new Entity();
+
+            var arm = new Entity();
+            var platform = new Entity();
+            arm["spatial"]["id"].Set("RobotArm");
+            platform["spatial"]["id"].Set("Platform");
+
+            r["robot"]["arm"].Set(arm);
+            r["robot"]["platform"].Set(platform);
+            r["spatial"]["position"].Set(new SpatialEntityComponent.position { x = 0, y = 0, z = 0 });
+            r["spatial"]["orientation"].Set(new SpatialEntityComponent.orientation { x = 0, y = 0, z = 1, w = 0 });
+            r["spatial"]["id"].Set("mobiPick");
+            return r;
         }
     }
 }
