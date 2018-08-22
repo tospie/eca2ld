@@ -50,6 +50,11 @@ namespace ECA2LD.Datapoints
                 var childEntityDP = new EntityDatapoint(child, this.Route + "/" + child.Guid + "/");
             }
 
+            // The RDF Graph vor the Attribute Node needs to point to this entity resource accordingly, instead of assuming a separate
+            // attribute datapoint
+            graph = isEntity
+                ? new AttributeLDPGraph(new Uri(uri), attribute, ((ECABaseModel.Entity)attribute.Value).GetDatapoint().Route)
+                : new AttributeLDPGraph(new Uri(uri), attribute);
 
             // if we have any other type of attribute, we go on to generate a datapoint for the attribute value based on the type of the attribute by
             // reflection
