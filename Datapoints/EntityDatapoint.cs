@@ -46,7 +46,7 @@ namespace ECA2LD.Datapoints
 
     public class EntityDatapoint : Resource
     {
-        EntityLDPGraph graph;
+        internal EntityLDPGraph graph;
 
         public EntityDatapoint(Entity value, string route) : base(route)
         {
