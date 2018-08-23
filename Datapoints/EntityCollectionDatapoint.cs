@@ -18,9 +18,11 @@ using LDPDatapoints.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using VDS.RDF;
+using VDS.RDF.Parsing;
 
 namespace ECA2LD.Datapoints
 {
@@ -28,6 +30,7 @@ namespace ECA2LD.Datapoints
     {
         EntityCollectionLDPGraph graph;
         string route;
+        TurtleParser turtleParser = new TurtleParser();
 
         public EntityCollectionDatapoint(EntityCollection collection, string route) : base(collection, route)
         {
@@ -59,6 +62,41 @@ namespace ECA2LD.Datapoints
             e.response.OutputStream.Write(Encoding.UTF8.GetBytes(graphAsTTL), 0, graphAsTTL.Length);
             e.response.OutputStream.Flush();
             e.response.OutputStream.Close();
+        }
+
+        protected override void onPost(object sender, HttpEventArgs e)
+        {
+            e.response.StatusCode = 201;
+            string returnMessage = "Object created";
+            if (e.request.ContentType.Contains("text/turtle"))
+            {
+                try
+                {
+                    var receivedGraph = parseTurtle(new Graph(), e.request.InputStream);
+                    graph.Extend(receivedGraph);
+                }
+                catch (Exception ex)
+                {
+                    e.response.StatusCode = 400;
+                    returnMessage = "Could not process the supplied turtle code. Exception: " + ex.Message;
+
+                }
+            }
+
+            e.response.OutputStream.Write(Encoding.UTF8.GetBytes(returnMessage), 0, returnMessage.Length);
+            e.response.OutputStream.Close();
+        }
+
+        private Graph parseTurtle(Graph g, Stream inputStream)
+        {
+            using (Stream input = inputStream)
+            {
+                using (StreamReader reader = new StreamReader(input, Encoding.UTF8))
+                {
+                    turtleParser.Load(g, reader);
+                }
+            }
+            return g;
         }
     }
 }
