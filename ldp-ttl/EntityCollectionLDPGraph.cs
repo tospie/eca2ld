@@ -23,8 +23,8 @@ namespace ECA2LD.ldp_ttl
         public void Extend(Entity e)
         {
             var dp = e.GetDatapoint();
-            RDFGraph.Assert(new VDS.RDF.Triple(un, RDF_TYPE, LDP_BASIC_CONTAINER));
-            RDFGraph.Assert(new VDS.RDF.Triple(un, RDFGraph.CreateUriNode("ldp:contains"), RDFGraph.CreateUriNode(new Uri(e.GetDatapoint().Route))));
+            RDFGraph.Assert(new Triple(un, RDF_TYPE, LDP_BASIC_CONTAINER));
+            RDFGraph.Assert(new Triple(un, RDFGraph.CreateUriNode("ldp:contains"), RDFGraph.CreateUriNode(new Uri(e.GetDatapoint().Route))));
         }
 
         public void Extend(Graph g)
