@@ -20,6 +20,7 @@ using System.IO;
 using System.Text;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 
 namespace ECA2LD.Datapoints
 {
@@ -70,6 +71,7 @@ namespace ECA2LD.Datapoints
                 try
                 {
                     var receivedGraph = parseTurtle(new Graph(), e.request.InputStream);
+                    processGraph(receivedGraph);
                     graph.Extend(receivedGraph);
                 }
                 catch (Exception ex)
@@ -94,6 +96,25 @@ namespace ECA2LD.Datapoints
                 }
             }
             return g;
+        }
+
+        private void processGraph(Graph g)
+        {
+            SparqlParameterizedString queryString = new SparqlParameterizedString();
+            queryString.Namespaces.AddNamespace("ldp", new Uri("http://www.w3.org/ns/ldp#"));
+            queryString.CommandText = "SELECT DISTINCT ?s WHERE { ?s ldp:contains ?p }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery query = parser.ParseFromString(queryString);
+
+            TripleStore store = new TripleStore();
+            store.Add(g);
+
+            ISparqlQueryProcessor processor = new LeviathanQueryProcessor(store);
+            SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
+            foreach (var r in results.Results)
+            {
+                graph.AddExternalContainer(r.Value("s").ToSafeString());
+            }
         }
     }
 }
