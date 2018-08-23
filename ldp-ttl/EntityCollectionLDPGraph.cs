@@ -32,6 +32,11 @@ namespace ECA2LD.ldp_ttl
             RDFGraph.Merge(g);
         }
 
+        public void AddExternalContainer(string externalUri)
+        {
+            RDFGraph.Assert(new Triple(RDFGraph.CreateUriNode(new Uri(externalUri)), RDF_TYPE, LDP_BASIC_CONTAINER));
+        }
+
         protected override void BuildRDFGraph()
         {
             lock (Collection)
