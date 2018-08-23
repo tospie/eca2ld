@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDS.RDF;
 
 namespace ECA2LD.ldp_ttl
 {
@@ -24,6 +25,11 @@ namespace ECA2LD.ldp_ttl
             var dp = e.GetDatapoint();
             RDFGraph.Assert(new VDS.RDF.Triple(un, RDF_TYPE, LDP_BASIC_CONTAINER));
             RDFGraph.Assert(new VDS.RDF.Triple(un, RDFGraph.CreateUriNode("ldp:contains"), RDFGraph.CreateUriNode(new Uri(e.GetDatapoint().Route))));
+        }
+
+        public void Extend(Graph g)
+        {
+            RDFGraph.Merge(g);
         }
 
         protected override void BuildRDFGraph()
