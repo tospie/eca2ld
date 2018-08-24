@@ -72,7 +72,6 @@ namespace ECA2LD.Datapoints
                 {
                     var receivedGraph = parseTurtle(new Graph(), e.request.InputStream);
                     processGraph(receivedGraph);
-                    graph.Extend(receivedGraph);
                 }
                 catch (Exception ex)
                 {
@@ -102,7 +101,7 @@ namespace ECA2LD.Datapoints
         {
             SparqlParameterizedString queryString = new SparqlParameterizedString();
             queryString.Namespaces.AddNamespace("ldp", new Uri("http://www.w3.org/ns/ldp#"));
-            queryString.CommandText = "SELECT DISTINCT ?s WHERE { ?s ldp:contains ?p }";
+            queryString.CommandText = "SELECT ?s ?o WHERE { ?s ldp:contains ?o }";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromString(queryString);
 
@@ -113,7 +112,7 @@ namespace ECA2LD.Datapoints
             SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
             foreach (var r in results.Results)
             {
-                graph.AddExternalContainer(r.Value("s").ToSafeString());
+                graph.AddExternalEntity(r.Value("o").ToSafeString());
             }
         }
     }
