@@ -36,6 +36,14 @@ namespace ECA2LD.ldp_ttl
         {
             RDFGraph.Assert(new Triple(RDFGraph.CreateUriNode(new Uri(externalUri)), RDF_TYPE, LDP_BASIC_CONTAINER));
         }
+        public void AddExternalEntity(string externalUri)
+        {
+            RDFGraph.NamespaceMap.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            RDFGraph.Assert(new Triple(un,
+                RDFGraph.CreateUriNode("foaf:knows"),
+                RDFGraph.CreateUriNode(new Uri(externalUri))
+                ));
+        }
 
         protected override void BuildRDFGraph()
         {
