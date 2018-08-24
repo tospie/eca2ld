@@ -112,6 +112,7 @@ namespace ECA2LD.Datapoints
             SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
             foreach (var r in results.Results)
             {
+                graph.AddExternalContainer(r.Value("s").ToSafeString());
                 graph.AddExternalEntity(r.Value("o").ToSafeString());
             }
         }
