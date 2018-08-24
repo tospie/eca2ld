@@ -49,7 +49,7 @@ namespace ExampleServer
                     }
                 }
 
-            string basePath = "http://" + host + ":" + port + "/entities/";
+            string basePath = "http://" + host + ":" + port + "/world/";
 
             Console.WriteLine("Entities are hosted at " + basePath);
             SpatialEntityComponent.RegisterComponents();
