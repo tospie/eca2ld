@@ -39,7 +39,7 @@ namespace ExampleServer
                     port = args[1];
                     try
                     {
-                        var uri = new Uri("http://" + host + ":" + port + "/entities/");
+                        var uri = new Uri("http://" + host + ":" + port + "/world/");
                     }
                     catch (Exception e)
                     {
