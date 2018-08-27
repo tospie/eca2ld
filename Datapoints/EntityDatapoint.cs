@@ -71,6 +71,11 @@ namespace ECA2LD.Datapoints
             e.response.OutputStream.Close();
         }
 
+        protected override void onOptions(object sender, HttpEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override void onPost(object sender, HttpEventArgs e)
         {
             throw new NotImplementedException();
