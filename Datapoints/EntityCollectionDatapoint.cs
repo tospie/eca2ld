@@ -62,6 +62,23 @@ namespace ECA2LD.Datapoints
             e.response.OutputStream.Close();
         }
 
+        /// <summary>
+        /// POST Endpoint accepts a valid turtle snippet that specifies containment of entities in a remote endpoint,
+        /// comparable to the RDF-Graph in ttl that the Entity Collection Datapoint produces upon a GET request.
+        /// Example for a valid Turtle-RDF:
+        ///
+        /// @prefix ldp: <http://www.w3.org/ns/ldp#>.  // Prefix needs to be included to allow parsing
+        ///
+        /// <http://host:port/base-path/> ldp:contains <http://host:port/base-path/entity-path>
+        ///
+        /// The above snippet will lead to the EntityCollectionDatapoint contain the triples
+        /// <collectionDataPoint> rdf:seeAlso <http://host:port/base-path/> .
+        /// <collectionDataPoint> foaf:knows <http://host:port/base-path/entity-path> .
+        ///
+        /// These triples express that information about additional entities can be retrieved from the remote host.
+        /// The local EntityCollection is aware of more entities, which are hosted on remote hosts, but of which data is
+        /// not present in the local dataset.
+        /// </summary>
         protected override void onPost(object sender, HttpEventArgs e)
         {
             e.response.StatusCode = 201;
