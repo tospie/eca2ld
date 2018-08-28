@@ -68,7 +68,9 @@ namespace ECA2LD.Datapoints
             {
                 Type valueResourceType = typeof(ValueResource<>).MakeGenericType(attribute.Type);
 
-                WebsocketSubscription ws = new WebsocketSubscription(uri.Replace("http", "ws") + "/ws/");
+                Uri datapointUri = new Uri(uri);
+                Uri wsUri = new Uri("ws://" + datapointUri.Host + ":" + (datapointUri.Port + 1) + datapointUri.PathAndQuery + "/ws/");
+                WebsocketSubscription ws = new WebsocketSubscription(wsUri.ToString());
                 ConstructorInfo constructor = valueResourceType.GetConstructor(new Type[] { attribute.Type, typeof(string) });
                 valueResource = constructor.Invoke(new object[] { attribute.Value, (uri + "/value/") });
                 MethodInfo subscribe = valueResourceType.GetMethod("Subscribe");
