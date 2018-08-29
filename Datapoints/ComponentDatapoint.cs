@@ -22,6 +22,8 @@ using ECABaseModel.Prototypes;
 using LDPDatapoints.Resources;
 using LDPDatapoints;
 using System.Net;
+using VDS.RDF;
+using VDS.RDF.Query;
 
 namespace ECA2LD.Datapoints
 {
@@ -71,7 +73,18 @@ namespace ECA2LD.Datapoints
 
         protected override void onPut(object sender, HttpEventArgs e)
         {
-            throw new NotImplementedException();
+            PutHandler.handleRequest(e, Route, processReceivedGraph);
+        }
+
+        private void processReceivedGraph(Graph g)
+        {
+            SparqlResultSet results = SparqlExecutor.PerformQuery("SELECT DISTINCT ?s ?o WHERE { ?s dct:hasPart ?o }", g);
+            foreach (SparqlResult r in results)
+            {
+                if (!r.Value("s").ToString().Equals(Route))
+                    continue;
+                graph.AddAttributeTriple(r.Value("o").ToString());
+            }
         }
     }
 }
