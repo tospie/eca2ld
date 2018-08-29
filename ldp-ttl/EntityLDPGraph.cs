@@ -33,6 +33,11 @@ namespace ECA2LD.ldp_ttl
             BuildRDFGraph();
         }
 
+        public void AddComponentTriple(string componentUri)
+        {
+            RDFGraph.Assert(new Triple(un, DCT_HAS_PART, RDFGraph.CreateUriNode(new Uri(componentUri))));
+        }
+
         protected override void BuildRDFGraph()
         {
             RDFGraph.Assert(new Triple(un, RDF_TYPE, LDP_BASIC_CONTAINER));
