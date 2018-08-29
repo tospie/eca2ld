@@ -46,7 +46,7 @@ namespace ECA2LD.ldp_ttl
         private void buildRDFBaseGraph()
         {
             RDFGraph.Assert(new Triple(un, RDF_TYPE, LDP_RDF_RESOURCE));
-            RDFGraph.Assert(new Triple(un, DCT_IDENTIFIER, RDFGraph.CreateLiteralNode(attribute.Prototype.Name, "xsd:string")));
+            RDFGraph.Assert(new Triple(un, DCT_IDENTIFIER, RDFGraph.CreateLiteralNode(attribute.Prototype.Name, new Uri("xsd:string"))));
 
             string compUri = dp_uri.Replace("/" + attribute.Prototype.Name, "");
             RDFGraph.Assert(new Triple(un, DCT_IS_PART_OF, RDFGraph.CreateUriNode(new Uri(compUri))));

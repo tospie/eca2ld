@@ -68,7 +68,7 @@ namespace ECA2LD.ldp_ttl
             attributesGraph.Assert(new Triple(
                 u_a,
                 attributesGraph.CreateUriNode("rdf:Type"),
-                attributesGraph.CreateLiteralNode(a.Type.ToString(), "xsd:type")));
+                attributesGraph.CreateLiteralNode(a.Type.ToString(), new Uri("xsd:type"))));
 
             attributesGraph.Assert(new Triple(
                 u_a,

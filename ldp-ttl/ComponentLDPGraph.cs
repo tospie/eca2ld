@@ -32,7 +32,7 @@ namespace ECA2LD.ldp_ttl
         {
             this.c = c;
             this.u = u;
-            n_c = RDFGraph.CreateLiteralNode(c.Name, "xsd:string");
+            n_c = RDFGraph.CreateLiteralNode(c.Name, new Uri("xsd:string"));
             BuildRDFGraph();
         }
 

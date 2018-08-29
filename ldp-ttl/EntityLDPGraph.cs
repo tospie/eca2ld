@@ -29,7 +29,7 @@ namespace ECA2LD.ldp_ttl
         public EntityLDPGraph(Uri u, Entity e) : base(u)
         {
             this.e = e;
-            n_e = RDFGraph.CreateLiteralNode(e.Guid.ToString(), "xsd:string");
+            n_e = RDFGraph.CreateLiteralNode(e.Guid.ToString(), new Uri("xsd:string"));
             BuildRDFGraph();
         }
 
