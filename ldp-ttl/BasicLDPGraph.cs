@@ -65,7 +65,7 @@ namespace ECA2LD.ldp_ttl
         {
             System.IO.StringWriter sw = new System.IO.StringWriter();
             writer.Save(RDFGraph, sw);
-            return sw.ToString();
+            return sw.ToString().Replace("@","^^");
         }
 
         protected void addNamespaces()
