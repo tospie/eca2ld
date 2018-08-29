@@ -51,7 +51,6 @@ namespace ECA2LD.Datapoints
     public class EntityDatapoint : Resource
     {
         internal EntityLDPGraph graph;
-        private TurtleParser turtleParser = new TurtleParser();
 
         public EntityDatapoint(Entity value, string route) : base(route)
         {
@@ -88,41 +87,7 @@ namespace ECA2LD.Datapoints
 
         protected override void onPut(object sender, HttpEventArgs e)
         {
-            string responseString = "";
-            if (e.request.ContentType.Equals("text/turtle"))
-            {
-                try
-                {
-                    handleTurtle(e.request.InputStream);
-                    e.response.StatusCode = 201;
-                    responseString = Route;
-                }
-                catch (Exception ex)
-                {
-                    e.response.StatusCode = 500;
-                    responseString = "Could not process provided data. Reason: " + ex.Message;
-                }
-            }
-            else
-            {
-                responseString = "Provided MIME type is not supported. Expected text/turtle as Content-Type.";
-                e.response.StatusCode = 415;
-            }
-            e.response.OutputStream.Write(Encoding.UTF8.GetBytes(responseString), 0, responseString.Length);
-            e.response.OutputStream.Close();
-        }
-
-        private void handleTurtle(Stream InputStream)
-        {
-            using (Stream input = InputStream)
-            {
-                using (StreamReader reader = new StreamReader(input, Encoding.UTF8))
-                {
-                    Graph receivedGraph = new Graph();
-                    turtleParser.Load(receivedGraph, reader);
-                    processReceivedGraph(receivedGraph);
-                }
-            }
+            PutHandler.handleRequest(e, Route, processReceivedGraph);
         }
 
         private void processReceivedGraph(Graph g)
