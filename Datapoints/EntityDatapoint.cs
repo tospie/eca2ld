@@ -17,9 +17,13 @@ using LDPDatapoints;
 using LDPDatapoints.Resources;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDS.RDF;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 
 namespace ECA2LD.Datapoints
 {
@@ -47,6 +51,7 @@ namespace ECA2LD.Datapoints
     public class EntityDatapoint : Resource
     {
         internal EntityLDPGraph graph;
+        private TurtleParser turtleParser = new TurtleParser();
 
         public EntityDatapoint(Entity value, string route) : base(route)
         {
@@ -83,7 +88,52 @@ namespace ECA2LD.Datapoints
 
         protected override void onPut(object sender, HttpEventArgs e)
         {
-            throw new NotImplementedException();
+            string responseString = "";
+            if (e.request.ContentType.Equals("text/turtle"))
+            {
+                try
+                {
+                    handleTurtle(e.request.InputStream);
+                    e.response.StatusCode = 201;
+                    responseString = Route;
+                }
+                catch (Exception ex)
+                {
+                    e.response.StatusCode = 500;
+                    responseString = "Could not process provided data. Reason: " + ex.Message;
+                }
+            }
+            else
+            {
+                responseString = "Provided MIME type is not supported. Expected text/turtle as Content-Type.";
+                e.response.StatusCode = 415;
+            }
+            e.response.OutputStream.Write(Encoding.UTF8.GetBytes(responseString), 0, responseString.Length);
+            e.response.OutputStream.Close();
+        }
+
+        private void handleTurtle(Stream InputStream)
+        {
+            using (Stream input = InputStream)
+            {
+                using (StreamReader reader = new StreamReader(input, Encoding.UTF8))
+                {
+                    Graph receivedGraph = new Graph();
+                    turtleParser.Load(receivedGraph, reader);
+                    processReceivedGraph(receivedGraph);
+                }
+            }
+        }
+
+        private void processReceivedGraph(Graph g)
+        {
+            SparqlResultSet results = SparqlExecutor.PerformQuery("SELECT DISTINCT ?s ?o WHERE { ?s dct:hasPart ?o }", g);
+            foreach (SparqlResult r in results)
+            {
+                if (!r.Value("s").ToString().Equals(Route))
+                    continue;
+                graph.AddComponentTriple(r.Value("o").ToString());
+            }
         }
     }
 }
