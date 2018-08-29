@@ -60,6 +60,7 @@
     <Compile Include="Datapoints\ComponentPrototypeDatapoint.cs" />
     <Compile Include="Datapoints\EntityCollectionDatapoint.cs" />
     <Compile Include="Datapoints\EntityDatapoint.cs" />
+    <Compile Include="Datapoints\SparqlHandler.cs" />
     <Compile Include="ldp-ttl\AttributeLDPGraph.cs" />
     <Compile Include="ldp-ttl\BasicLDPGraph.cs" />
     <Compile Include="ldp-ttl\ComponentLDPGraph.cs" />
