@@ -52,7 +52,7 @@ namespace ECA2LD.ldp_ttl
 
         public BasicLDPGraph(Uri u)
         {
-            writer = new CompressingTurtleWriter();
+            writer = new CompressingTurtleWriter(VDS.RDF.Parsing.TurtleSyntax.W3C);
             RDFGraph = new Graph();
             dp_uri = u.ToString();
             un = RDFGraph.CreateUriNode(u);
@@ -65,7 +65,7 @@ namespace ECA2LD.ldp_ttl
         {
             System.IO.StringWriter sw = new System.IO.StringWriter();
             writer.Save(RDFGraph, sw);
-            return sw.ToString().Replace("@","^^");
+            return sw.ToString().Replace("@", "^^").Replace("^^prefix", "@prefix");
         }
 
         protected void addNamespaces()
