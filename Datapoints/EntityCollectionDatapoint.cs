@@ -116,17 +116,8 @@ namespace ECA2LD.Datapoints
 
         private void processGraph(Graph g)
         {
-            SparqlParameterizedString queryString = new SparqlParameterizedString();
-            queryString.Namespaces.AddNamespace("ldp", new Uri("http://www.w3.org/ns/ldp#"));
-            queryString.CommandText = "SELECT ?s ?o WHERE { ?s ldp:contains ?o }";
-            SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery query = parser.ParseFromString(queryString);
+            SparqlResultSet results = SparqlExecutor.PerformQuery("SELECT ?s ?o WHERE { ?s ldp:contains ?o }", g);
 
-            TripleStore store = new TripleStore();
-            store.Add(g);
-
-            ISparqlQueryProcessor processor = new LeviathanQueryProcessor(store);
-            SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
             foreach (var r in results.Results)
             {
                 graph.AddExternalContainer(r.Value("s").ToSafeString());
