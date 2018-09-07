@@ -74,6 +74,9 @@ namespace ECA2LD.Datapoints
 
         protected override void onGet(object sender, HttpEventArgs e)
         {
+            if (e.request.QueryString.Get("query") != null)
+                onSparql(e);
+
             string graphAsTTL;
             string entailment = e.request.QueryString.Get("entailment");
             if (entailment != null && entailment.Equals("complete"))
@@ -84,6 +87,28 @@ namespace ECA2LD.Datapoints
             e.response.OutputStream.Flush();
             e.response.OutputStream.Close();
         }
+
+        protected void onSparql(HttpEventArgs e)
+        {
+            string query = e.request.QueryString.Get("query");
+            StreamWriter w = new StreamWriter(e.response.OutputStream);
+            try
+            {
+                var result = SparqlExecutor.PerformQuery(query, completeGraph.RDFGraph);
+                e.response.ContentType = "application/json";
+                e.response.StatusCode = 200;
+                w.Write(JsonConvert.SerializeObject(result));
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = "Provided query produced an error: " + ex.Message;
+                e.response.StatusCode = 400;
+                w.Write(errorMessage);
+            }
+            w.Flush();
+            e.response.OutputStream.Close();
+        }
+
 
         /// <summary>
         /// POST Endpoint accepts a valid turtle snippet that specifies containment of entities in a remote endpoint,
