@@ -24,12 +24,32 @@ using LDPDatapoints.Subscriptions;
 
 namespace ECA2LD.Datapoints
 {
+    internal static class AttributeDatapointManager
+    {
+        private static Dictionary<string, AttributeDatapoint> datapoints = new Dictionary<string, AttributeDatapoint>();
+
+        public static void SetDatapoint(this ECABaseModel.Attribute attribute, AttributeDatapoint datapoint)
+        {
+            datapoints.Add(attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name, datapoint);
+        }
+
+        public static AttributeDatapoint GetDatapoint(this ECABaseModel.Attribute attribute)
+        {
+            return datapoints[attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name];
+        }
+
+        public static bool HasDatapoint(this ECABaseModel.Attribute attribute)
+        {
+            return datapoints.ContainsKey(attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name);
+        }
+    }
+
     /// <summary>
     /// Creates an ECA2LD HTTP / RDF endpoint around an <seealso cref="ECABaseModel.Attribute"/>
     /// </summary>
     class AttributeDatapoint : Resource
     {
-        AttributeLDPGraph graph;
+        internal AttributeLDPGraph graph;
         object valueResource;
 
         /// <summary>
@@ -76,6 +96,8 @@ namespace ECA2LD.Datapoints
                 MethodInfo subscribe = valueResourceType.GetMethod("Subscribe");
                 subscribe.Invoke(valueResource, new object[] { ws });
             }
+
+            attribute.SetDatapoint(this);
         }
 
         protected override void onGet(object sender, HttpEventArgs e)
