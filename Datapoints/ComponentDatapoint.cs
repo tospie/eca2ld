@@ -27,12 +27,33 @@ using VDS.RDF.Query;
 
 namespace ECA2LD.Datapoints
 {
+
+    internal static class ComponentDatapointManager
+    {
+        private static Dictionary<Guid, ComponentDatapoint> datapoints = new Dictionary<Guid, ComponentDatapoint>();
+
+        public static void SetDatapoint(this Component component, ComponentDatapoint datapoint)
+        {
+            datapoints.Add(component.Guid, datapoint);
+        }
+
+        public static ComponentDatapoint GetDatapoint(this Component component)
+        {
+            return datapoints[component.Guid];
+        }
+
+        public static bool HasDatapoint(this Component component)
+        {
+            return datapoints.ContainsKey(component.Guid);
+        }
+    }
+
     /// <summary>
     /// Creates an ECA2LD HTTP / RDF endpoint around an <seealso cref="ECABaseModel.Component"/>
     /// </summary>
     class ComponentDatapoint : Resource
     {
-        private ComponentLDPGraph graph;
+        internal ComponentLDPGraph graph;
 
         /// <summary>
         /// Constructor.
@@ -42,6 +63,7 @@ namespace ECA2LD.Datapoints
         public ComponentDatapoint(Component component, string uri) : base(uri)
         {
             graph = new ComponentLDPGraph(new Uri(uri), component);
+            component.SetDatapoint(this);
             try
             {
                 new ComponentPrototypeDatapoint(component.Prototype, new Uri(uri).getPrototypeBaseUri() + component.Name + "/");
