@@ -15,9 +15,12 @@ using ECA2LD.ldp_ttl;
 using ECABaseModel;
 using LDPDatapoints;
 using LDPDatapoints.Resources;
+using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Net;
 using System.Text;
+using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -27,12 +30,15 @@ namespace ECA2LD.Datapoints
     public class EntityCollectionDatapoint : CollectionResource<EntityCollection, Entity>
     {
         EntityCollectionLDPGraph graph;
+        BasicLDPGraph completeGraph;
+
         string route;
         TurtleParser turtleParser = new TurtleParser();
 
         public EntityCollectionDatapoint(EntityCollection collection, string route) : base(collection, route)
         {
             graph = new EntityCollectionLDPGraph(new Uri(route), collection);
+            completeGraph = new BasicLDPGraph(new Uri(route + "rdf/"));
             this.route = route;
 
             lock (collection)
@@ -40,10 +46,17 @@ namespace ECA2LD.Datapoints
                 foreach (Entity e in collection)
                 {
                     createDatapointOnEntity(e);
+                    addEntityToCompleteGraph(e);
+                    completeGraph.RDFGraph.Merge(graph.RDFGraph);
                 }
             }
 
-            collection.AddedEntity += (o, e) => createDatapointOnEntity(e.Entity);
+            collection.AddedEntity += (o, e) =>
+            {
+                createDatapointOnEntity(e.Entity);
+                addEntityToCompleteGraph(e.Entity);
+                completeGraph.RDFGraph.Merge(graph.RDFGraph);
+            };
         }
 
         private void createDatapointOnEntity(Entity e)
@@ -52,6 +65,11 @@ namespace ECA2LD.Datapoints
             {
                 var entityDatapoint = new EntityDatapoint(e, route.TrimEnd('/') + "/" + e.Guid + "/");
             }
+        }
+
+        private void addEntityToCompleteGraph(Entity e)
+        {
+            completeGraph.RDFGraph.Merge(e.GetDatapoint().graph.GetMergedGraph());
         }
 
         protected override void onGet(object sender, HttpEventArgs e)
