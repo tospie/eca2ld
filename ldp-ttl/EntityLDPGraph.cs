@@ -11,6 +11,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using ECA2LD.Datapoints;
 using ECABaseModel;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,15 @@ namespace ECA2LD.ldp_ttl
             RDFGraph.Assert(new Triple(un, DCT_HAS_PART, RDFGraph.CreateUriNode(new Uri(componentUri))));
         }
 
+        public Graph GetMergedGraph()
+        {
+            Graph mergedGraph = RDFGraph.CopyGraph();
+            foreach (Component c in e.Components)
+            {
+                mergedGraph.Merge(c.GetDatapoint().graph.GetMergedGraph());
+            }
+            return mergedGraph;
+        }
         protected override void BuildRDFGraph()
         {
             RDFGraph.Assert(new Triple(un, RDF_TYPE, LDP_BASIC_CONTAINER));
