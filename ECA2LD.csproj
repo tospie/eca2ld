@@ -68,6 +68,7 @@
     <Compile Include="ldp-ttl\ComponentPrototypeGraph.cs" />
     <Compile Include="ldp-ttl\EntityCollectionLDPGraph.cs" />
     <Compile Include="ldp-ttl\EntityLDPGraph.cs" />
+    <Compile Include="ldp-ttl\GraphExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtensions.cs" />
   </ItemGroup>
