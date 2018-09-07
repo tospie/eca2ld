@@ -74,7 +74,12 @@ namespace ECA2LD.Datapoints
 
         protected override void onGet(object sender, HttpEventArgs e)
         {
-            string graphAsTTL = graph.GetTTL();
+            string graphAsTTL;
+            string entailment = e.request.QueryString.Get("entailment");
+            if (entailment != null && entailment.Equals("complete"))
+                graphAsTTL = completeGraph.GetTTL();
+            else
+                graphAsTTL = graph.GetTTL();
             e.response.OutputStream.Write(Encoding.UTF8.GetBytes(graphAsTTL), 0, graphAsTTL.Length);
             e.response.OutputStream.Flush();
             e.response.OutputStream.Close();
