@@ -37,6 +37,11 @@ namespace ECA2LD.ldp_ttl
             RDFGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateUriNode(new Uri(EntityUri))));
         }
 
+        public void AddTypeRoute(string typeRoute)
+        {
+            RDFGraph.Assert(new Triple(un, RDF_TYPE, RDFGraph.CreateUriNode(new Uri(typeRoute))));
+        }
+
         protected override void BuildRDFGraph()
         {
             buildRDFBaseGraph();
