@@ -168,8 +168,8 @@ namespace ECA2LD.Datapoints
 
             foreach (var r in results.Results)
             {
-                graph.AddExternalContainer(r.Value("s").ToSafeString());
-                graph.AddExternalEntity(r.Value("o").ToSafeString());
+                graph.AddExternalContainer(r.Value("s").ToString());
+                graph.AddExternalEntity(r.Value("o").ToString());
             }
         }
     }
