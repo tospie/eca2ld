@@ -21,6 +21,7 @@ using LDPDatapoints;
 using ECA2LD.ldp_ttl;
 using System.Reflection;
 using LDPDatapoints.Subscriptions;
+using VDS.RDF;
 
 namespace ECA2LD.Datapoints
 {
@@ -61,6 +62,7 @@ namespace ECA2LD.Datapoints
         {
             // In case we store an Entity as attribute, the resulting Resource should rather point to the datapoint that is created for it.
             bool isEntity = attribute.Type.Equals(typeof(ECABaseModel.Entity));
+            bool isEntityCollection = attribute.Type.Equals(typeof(ECABaseModel.EntityCollection));
 
             // In case that the attribute contains another entity, we have to check whether there is already a Datapoint set up for it. If not,
             // we take care of this here. This follows the idea of automatic recursive Datapoint generation.
@@ -76,15 +78,25 @@ namespace ECA2LD.Datapoints
                     ));
             }
 
+            if (isEntityCollection && !((ECABaseModel.EntityCollection)attribute.Value).HasDatapoint())
+            {
+                var child = (ECABaseModel.EntityCollection)attribute.Value;
+                var childExDP = new EntityCollectionDatapoint(child, this.Route.TrimEnd('/') + "/" + child.Guid + "/");
+            }
+
             // The RDF Graph vor the Attribute Node needs to point to this entity resource accordingly, instead of assuming a separate
             // attribute datapoint
-            graph = isEntity
-                ? new AttributeLDPGraph(new Uri(uri), attribute, ((ECABaseModel.Entity)attribute.Value).GetDatapoint().Route)
-                : new AttributeLDPGraph(new Uri(uri), attribute);
+            if (!(isEntity || isEntityCollection))
+                graph = new AttributeLDPGraph(new Uri(uri), attribute);
+            else if (isEntity)
+                graph = new AttributeLDPGraph(new Uri(uri), attribute, ((ECABaseModel.Entity)attribute.Value).GetDatapoint().Route);
+            else
+                graph = new AttributeLDPGraph(new Uri(uri), attribute, ((ECABaseModel.EntityCollection)attribute.Value).GetDatapoint().Route);
+
 
             // if we have any other type of attribute, we go on to generate a datapoint for the attribute value based on the type of the attribute by
             // reflection
-            if (!isEntity)
+            if (!isEntity && !isEntityCollection)
             {
                 Type valueResourceType = typeof(ValueResource<>).MakeGenericType(attribute.Type);
 
