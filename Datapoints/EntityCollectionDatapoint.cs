@@ -17,6 +17,7 @@ using LDPDatapoints;
 using LDPDatapoints.Resources;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -27,6 +28,27 @@ using VDS.RDF.Query;
 
 namespace ECA2LD.Datapoints
 {
+
+    internal static class EntityCollectionDatapointManager
+    {
+        private static Dictionary<Guid, EntityCollectionDatapoint> datapoints = new Dictionary<Guid, EntityCollectionDatapoint>();
+
+        public static void SetDatapoint(this EntityCollection entityCollection, EntityCollectionDatapoint datapoint)
+        {
+            datapoints.Add(entityCollection.Guid, datapoint);
+        }
+
+        public static EntityCollectionDatapoint GetDatapoint(this EntityCollection entityCollection)
+        {
+            return datapoints[entityCollection.Guid];
+        }
+
+        public static bool HasDatapoint(this EntityCollection entityCollection)
+        {
+            return datapoints.ContainsKey(entityCollection.Guid);
+        }
+    }
+
     public class EntityCollectionDatapoint : CollectionResource<EntityCollection, Entity>
     {
         EntityCollectionLDPGraph graph;
@@ -41,6 +63,7 @@ namespace ECA2LD.Datapoints
             completeGraph = new BasicLDPGraph(new Uri(route + "rdf/"));
             this.route = route;
 
+            collection.SetDatapoint(this);
             lock (collection)
             {
                 foreach (Entity e in collection)
