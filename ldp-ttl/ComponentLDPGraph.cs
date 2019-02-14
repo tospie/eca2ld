@@ -48,7 +48,7 @@ namespace ECA2LD.ldp_ttl
 
             foreach (AttributePrototype ap in c.Prototype.AttributePrototypes)
             {
-                mergedGraph.Merge(c[ap.Name].GetDatapoint().graph.RDFGraph);
+                mergedGraph.Merge(c[ap.Name].GetDatapoint().graph.getMergedGraph());
             }
             return mergedGraph;
         }

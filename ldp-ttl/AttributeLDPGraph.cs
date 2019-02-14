@@ -48,6 +48,13 @@ namespace ECA2LD.ldp_ttl
             RDFGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateUriNode(new Uri(dp_uri + "/value/"))));
         }
 
+        public Graph getMergedGraph()
+        {
+            Graph mergedGraph = RDFGraph.CopyGraph();
+            mergedGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateLiteralNode(attribute.Value.ToString(), new Uri("xsd:attributeValue"))));
+            return mergedGraph;
+        }
+
         private void buildRDFBaseGraph()
         {
             RDFGraph.Assert(new Triple(un, RDF_TYPE, LDP_RDF_RESOURCE));
