@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ECA2LD.Datapoints;
+using ECABaseModel;
 using LDPDatapoints;
 using VDS.RDF;
 
@@ -52,6 +54,14 @@ namespace ECA2LD.ldp_ttl
         {
             Graph mergedGraph = RDFGraph.CopyGraph();
             mergedGraph.Assert(new Triple(un, RDF_VALUE, RDFGraph.CreateLiteralNode(attribute.Value.ToString(), new Uri("xsd:attributeValue"))));
+            if (attribute.Type.Equals(typeof(EntityCollection)))
+            {
+                foreach (Entity e in (EntityCollection)attribute.Value)
+                    mergedGraph.Assert(new Triple(un,
+                        RDFGraph.CreateUriNode("ldp:contains"),
+                        RDFGraph.CreateUriNode(new Uri(e.GetDatapoint().Route))
+                        ));
+            }
             return mergedGraph;
         }
 
