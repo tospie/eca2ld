@@ -52,6 +52,7 @@ namespace ECA2LD.Datapoints
     {
         internal AttributeLDPGraph graph;
         object valueResource;
+        ECABaseModel.Attribute attribute;
 
         /// <summary>
         /// Constructor.
@@ -60,6 +61,7 @@ namespace ECA2LD.Datapoints
         /// <param name="uri">Endpoint listener URI</param>
         public AttributeDatapoint(ECABaseModel.Attribute attribute, string uri) : base(uri)
         {
+            this.attribute = attribute;
             // In case we store an Entity as attribute, the resulting Resource should rather point to the datapoint that is created for it.
             bool isEntity = attribute.Type.Equals(typeof(ECABaseModel.Entity));
             bool isEntityCollection = attribute.Type.Equals(typeof(ECABaseModel.EntityCollection));
