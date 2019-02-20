@@ -22,6 +22,7 @@ using ECA2LD.ldp_ttl;
 using System.Reflection;
 using LDPDatapoints.Subscriptions;
 using VDS.RDF;
+using LDPDatapoints.Events;
 
 namespace ECA2LD.Datapoints
 {
@@ -101,17 +102,25 @@ namespace ECA2LD.Datapoints
             if (!isEntity && !isEntityCollection)
             {
                 Type valueResourceType = typeof(ValueResource<>).MakeGenericType(attribute.Type);
-
                 Uri datapointUri = new Uri(uri);
                 Uri wsUri = new Uri("ws://" + datapointUri.Host + ":" + (datapointUri.Port + 1) + datapointUri.PathAndQuery + "/ws/");
                 WebsocketSubscription ws = new WebsocketSubscription(wsUri.ToString());
                 ConstructorInfo constructor = valueResourceType.GetConstructor(new Type[] { attribute.Type, typeof(string) });
                 valueResource = constructor.Invoke(new object[] { attribute.Value, (uri + "/value/") });
+                EventInfo eventInfo = valueResourceType.GetEvent("ValueChanged");
+                eventInfo.AddEventHandler(valueResource, new EventHandler<EventArgs>(HandleValueChanged));
                 MethodInfo subscribe = valueResourceType.GetMethod("Subscribe");
                 subscribe.Invoke(valueResource, new object[] { ws });
             }
 
             attribute.SetDatapoint(this);
+        }
+
+        private void HandleValueChanged(object sender, EventArgs e)
+        {
+            var valueArgs = e as ValueChangedEventArgs;
+            if (valueArgs.Value != attribute.Value)
+                attribute.Set(valueArgs.Value);
         }
 
         protected override void onGet(object sender, HttpEventArgs e)
