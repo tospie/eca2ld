@@ -13,6 +13,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 using ECA2LD.ldp_ttl;
 using ECABaseModel;
+using ECABaseModel.Events;
 using LDPDatapoints;
 using LDPDatapoints.Resources;
 using Newtonsoft.Json;
@@ -71,6 +72,7 @@ namespace ECA2LD.Datapoints
                     createDatapointOnEntity(e);
                     addEntityToCompleteGraph(e);
                     completeGraph.RDFGraph.Merge(graph.RDFGraph);
+                    e.ChangedAttribute += new EventHandler<ChangedAttributeEventArgs>(updateCompleteGraph);
                 }
             }
 
@@ -79,7 +81,21 @@ namespace ECA2LD.Datapoints
                 createDatapointOnEntity(e.Entity);
                 addEntityToCompleteGraph(e.Entity);
                 completeGraph.RDFGraph.Merge(graph.RDFGraph);
+                e.Entity.ChangedAttribute += new EventHandler<ChangedAttributeEventArgs>(updateCompleteGraph);
             };
+        }
+
+        private void updateCompleteGraph(object sender, ChangedAttributeEventArgs e)
+        {
+            string attributeUri = e.Component[e.AttributeName].GetDatapoint().Route;
+            completeGraph.RDFGraph.Retract(new Triple(
+                completeGraph.RDFGraph.CreateUriNode(new Uri(attributeUri)),
+                completeGraph.RDFGraph.CreateUriNode("rdf:value"),
+                completeGraph.RDFGraph.CreateLiteralNode(e.OldValue.ToString(), new Uri("xsd:attributeValue"))));
+            completeGraph.RDFGraph.Assert(new Triple(
+                completeGraph.RDFGraph.CreateUriNode(new Uri(attributeUri)),
+                completeGraph.RDFGraph.CreateUriNode("rdf:value"),
+                completeGraph.RDFGraph.CreateLiteralNode(e.NewValue.ToString(), new Uri("xsd:attributeValue"))));
         }
 
         private void createDatapointOnEntity(Entity e)
