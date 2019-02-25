@@ -21,3 +21,7 @@ git submodule update
 To check if everything worked set the ExampleServer as startup project, then Start the project. If the program throws a HTTPListenerException "Access is denied", simply change the port of the URL in the Program.cs to a port that your user has access to.
 
 If the console is blank, navigate to http://localhost:12345/entities/e (if you replaced the port number, replace it here, too). Your browser should respond with a turtle representation of an Object.
+
+## Acknowledgement
+
+_The work presented in this paper received funding from the European Union’s project FI-NEXT under grant agreement no. 732851, and by the Federal Ministry of Education and Research of Germany in the project Hybr-iT under support code 01IS16026A._
