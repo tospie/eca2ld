@@ -32,17 +32,20 @@ namespace ECA2LD.Datapoints
 
         public static void SetDatapoint(this ECABaseModel.Attribute attribute, AttributeDatapoint datapoint)
         {
-            datapoints.Add(attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name, datapoint);
+            lock(datapoints)
+                datapoints.Add(attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name, datapoint);
         }
 
         public static AttributeDatapoint GetDatapoint(this ECABaseModel.Attribute attribute)
         {
-            return datapoints[attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name];
+            lock(datapoints)
+                return datapoints[attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name];
         }
 
         public static bool HasDatapoint(this ECABaseModel.Attribute attribute)
         {
-            return datapoints.ContainsKey(attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name);
+            lock(datapoints)
+                return datapoints.ContainsKey(attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name);
         }
     }
 

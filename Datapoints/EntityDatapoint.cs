@@ -34,17 +34,20 @@ namespace ECA2LD.Datapoints
 
         public static void SetDatapoint(this Entity entity, EntityDatapoint datapoint)
         {
-            datapoints.Add(entity.Guid, datapoint);
+            lock (datapoints)
+                datapoints.Add(entity.Guid, datapoint);
         }
 
         public static EntityDatapoint GetDatapoint(this Entity entity)
         {
-            return datapoints[entity.Guid];
+            lock (datapoints)
+                return datapoints[entity.Guid];
         }
 
         public static bool HasDatapoint(this Entity entity)
         {
-            return datapoints.ContainsKey(entity.Guid);
+            lock (datapoints)
+                return datapoints.ContainsKey(entity.Guid);
         }
     }
 

@@ -34,17 +34,20 @@ namespace ECA2LD.Datapoints
 
         public static void SetDatapoint(this Component component, ComponentDatapoint datapoint)
         {
-            datapoints.Add(component.Guid, datapoint);
+            lock(datapoints)
+                datapoints.Add(component.Guid, datapoint);
         }
 
         public static ComponentDatapoint GetDatapoint(this Component component)
         {
-            return datapoints[component.Guid];
+            lock(datapoints)
+                return datapoints[component.Guid];
         }
 
         public static bool HasDatapoint(this Component component)
         {
-            return datapoints.ContainsKey(component.Guid);
+            lock(datapoints)
+                return datapoints.ContainsKey(component.Guid);
         }
     }
 
