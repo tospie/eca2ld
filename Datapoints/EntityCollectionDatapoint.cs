@@ -111,7 +111,7 @@ namespace ECA2LD.Datapoints
             completeGraph.RDFGraph.Merge(e.GetDatapoint().graph.GetMergedGraph());
         }
 
-        protected override void onGet(object sender, HttpEventArgs e)
+        public override void onGet(object sender, HttpEventArgs e)
         {
             if (e.request.QueryString.Get("query") != null)
                 onSparql(e);
@@ -166,7 +166,7 @@ namespace ECA2LD.Datapoints
         /// The local EntityCollection is aware of more entities, which are hosted on remote hosts, but of which data is
         /// not present in the local dataset.
         /// </summary>
-        protected override void onPost(object sender, HttpEventArgs e)
+        public override void onPost(object sender, HttpEventArgs e)
         {
             e.response.StatusCode = 201;
             string returnMessage = "Object created";
