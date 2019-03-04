@@ -23,6 +23,11 @@ using ECA2LD.ldp_ttl;
 
 namespace ECA2LD.Datapoints
 {
+    static class ComponentPrototypeManager
+    {
+        public static Dictionary<string, ComponentPrototypeDatapoint> RegisteredPrototypes = new Dictionary<string, ComponentPrototypeDatapoint>();
+    }
+
     class ComponentPrototypeDatapoint : Resource
     {
         ComponentPrototypeGraph graph;

@@ -66,7 +66,13 @@ namespace ECA2LD.Datapoints
             component.SetDatapoint(this);
             try
             {
-                new ComponentPrototypeDatapoint(component.Prototype, new Uri(uri).getPrototypeBaseUri() + component.Name + "/");
+                lock (ComponentPrototypeManager.RegisteredPrototypes)
+                    if (!ComponentPrototypeManager.RegisteredPrototypes.ContainsKey(component.Prototype.Name))
+                    {
+                        ComponentPrototypeManager.RegisteredPrototypes.Add(component.Prototype.Name,
+                               new ComponentPrototypeDatapoint(component.Prototype, new Uri(uri).getPrototypeBaseUri() + component.Name + "/"));
+                    }
+
             }
             catch (HttpListenerException) { }
             foreach (AttributePrototype a in component.Prototype.AttributePrototypes)
