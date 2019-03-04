@@ -17,6 +17,7 @@ using LDPDatapoints;
 using LDPDatapoints.Resources;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -40,6 +41,13 @@ namespace ECA2LD.Datapoints
 
         public static EntityDatapoint GetDatapoint(this Entity entity)
         {
+            if (!entity.HasDatapoint())
+            {
+                Console.WriteLine("WARNING: NO DATAPOINT FOUND FOR ENTITY {0}\n{1}",
+                    entity.Guid,
+                    new StackTrace().ToString());
+                return null;
+            }
             lock (datapoints)
                 return datapoints[entity.Guid];
         }

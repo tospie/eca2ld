@@ -23,6 +23,7 @@ using System.Reflection;
 using LDPDatapoints.Subscriptions;
 using VDS.RDF;
 using LDPDatapoints.Events;
+using System.Diagnostics;
 
 namespace ECA2LD.Datapoints
 {
@@ -38,6 +39,15 @@ namespace ECA2LD.Datapoints
 
         public static AttributeDatapoint GetDatapoint(this ECABaseModel.Attribute attribute)
         {
+            if (!attribute.HasDatapoint())
+            {
+                Console.WriteLine("WARNING: NO DATAPOINT FOUND FOR ATTRIBUTE {0}:{1}:{2}\n{3}",
+                    attribute.ParentComponent.ContainingEntity.Guid,
+                    attribute.ParentComponent.Name,
+                    attribute.Prototype.Name,
+                    new StackTrace().ToString());
+                return null;
+            }
             lock(datapoints)
                 return datapoints[attribute.ParentComponent.Guid.ToString() + "." + attribute.Prototype.Name];
         }

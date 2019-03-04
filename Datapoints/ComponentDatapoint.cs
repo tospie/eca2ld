@@ -40,6 +40,14 @@ namespace ECA2LD.Datapoints
 
         public static ComponentDatapoint GetDatapoint(this Component component)
         {
+            if (!component.HasDatapoint())
+            {
+                Console.WriteLine("WARNING: NO DATAPOINT FOUND FOR COMPONENT {0}:{1}\n{2}",
+                    component.ContainingEntity.Guid,
+                    component.Name,
+                    new System.Diagnostics.StackTrace().ToString());
+                return null;
+            }
             lock(datapoints)
                 return datapoints[component.Guid];
         }
@@ -80,7 +88,14 @@ namespace ECA2LD.Datapoints
             catch (HttpListenerException) { }
             foreach (AttributePrototype a in component.Prototype.AttributePrototypes)
             {
-                new AttributeDatapoint(component[a.Name], uri.TrimEnd('/') + "/" + a.Name);
+                try
+                {
+                    new AttributeDatapoint(component[a.Name], uri.TrimEnd('/') + "/" + a.Name);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("[ECA2LD.Datapoints.ComponentDatapoint] FAILED to create Attribute Datapoint: {0}", e.Message);
+                }
             }
         }
 
