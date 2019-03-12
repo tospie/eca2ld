@@ -3,4 +3,4 @@
 	url = https://github.com/tospie/eca-base-model.git
 [submodule "linked-datapoints"]
 	path = linked-datapoints
-	url = https://iceland.sb.dfki.de/bitbucket/scm/hyb/linked-datapoints.git
+	url = https://github.com/tospie/linked-datapoints.git
