@@ -23,6 +23,11 @@ using ECA2LD.ldp_ttl;
 
 namespace ECA2LD.Datapoints
 {
+    static class ComponentPrototypeManager
+    {
+        public static Dictionary<string, ComponentPrototypeDatapoint> RegisteredPrototypes = new Dictionary<string, ComponentPrototypeDatapoint>();
+    }
+
     class ComponentPrototypeDatapoint : Resource
     {
         ComponentPrototypeGraph graph;
@@ -32,7 +37,7 @@ namespace ECA2LD.Datapoints
             graph = new ComponentPrototypeGraph(new Uri(route), p);
         }
 
-        protected override void onGet(object sender, HttpEventArgs e)
+        public override void onGet(object sender, HttpEventArgs e)
         {
             string graphAsTTL = graph.GetTTL();
             e.response.OutputStream.Write(Encoding.UTF8.GetBytes(graphAsTTL), 0, graphAsTTL.Length);
@@ -40,17 +45,17 @@ namespace ECA2LD.Datapoints
             e.response.OutputStream.Close();
         }
 
-        protected override void onOptions(object sender, HttpEventArgs e)
+        public override void onOptions(object sender, HttpEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        protected override void onPost(object sender, HttpEventArgs e)
+        public override void onPost(object sender, HttpEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        protected override void onPut(object sender, HttpEventArgs e)
+        public override void onPut(object sender, HttpEventArgs e)
         {
             throw new NotImplementedException();
         }

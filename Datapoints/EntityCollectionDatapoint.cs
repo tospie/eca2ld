@@ -13,10 +13,12 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 using ECA2LD.ldp_ttl;
 using ECABaseModel;
+using ECABaseModel.Events;
 using LDPDatapoints;
 using LDPDatapoints.Resources;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -27,6 +29,27 @@ using VDS.RDF.Query;
 
 namespace ECA2LD.Datapoints
 {
+
+    internal static class EntityCollectionDatapointManager
+    {
+        private static Dictionary<Guid, EntityCollectionDatapoint> datapoints = new Dictionary<Guid, EntityCollectionDatapoint>();
+
+        public static void SetDatapoint(this EntityCollection entityCollection, EntityCollectionDatapoint datapoint)
+        {
+            datapoints.Add(entityCollection.Guid, datapoint);
+        }
+
+        public static EntityCollectionDatapoint GetDatapoint(this EntityCollection entityCollection)
+        {
+            return datapoints[entityCollection.Guid];
+        }
+
+        public static bool HasDatapoint(this EntityCollection entityCollection)
+        {
+            return datapoints.ContainsKey(entityCollection.Guid);
+        }
+    }
+
     public class EntityCollectionDatapoint : CollectionResource<EntityCollection, Entity>
     {
         EntityCollectionLDPGraph graph;
@@ -41,6 +64,7 @@ namespace ECA2LD.Datapoints
             completeGraph = new BasicLDPGraph(new Uri(route + "rdf/"));
             this.route = route;
 
+            collection.SetDatapoint(this);
             lock (collection)
             {
                 foreach (Entity e in collection)
@@ -48,6 +72,7 @@ namespace ECA2LD.Datapoints
                     createDatapointOnEntity(e);
                     addEntityToCompleteGraph(e);
                     completeGraph.RDFGraph.Merge(graph.RDFGraph);
+                    e.ChangedAttribute += new EventHandler<ChangedAttributeEventArgs>(updateCompleteGraph);
                 }
             }
 
@@ -56,7 +81,21 @@ namespace ECA2LD.Datapoints
                 createDatapointOnEntity(e.Entity);
                 addEntityToCompleteGraph(e.Entity);
                 completeGraph.RDFGraph.Merge(graph.RDFGraph);
+                e.Entity.ChangedAttribute += new EventHandler<ChangedAttributeEventArgs>(updateCompleteGraph);
             };
+        }
+
+        private void updateCompleteGraph(object sender, ChangedAttributeEventArgs e)
+        {
+            string attributeUri = e.Component[e.AttributeName].GetDatapoint().Route;
+            completeGraph.RDFGraph.Retract(new Triple(
+                completeGraph.RDFGraph.CreateUriNode(new Uri(attributeUri)),
+                completeGraph.RDFGraph.CreateUriNode("rdf:value"),
+                completeGraph.RDFGraph.CreateLiteralNode(e.OldValue.ToString(), new Uri("xsd:attributeValue"))));
+            completeGraph.RDFGraph.Assert(new Triple(
+                completeGraph.RDFGraph.CreateUriNode(new Uri(attributeUri)),
+                completeGraph.RDFGraph.CreateUriNode("rdf:value"),
+                completeGraph.RDFGraph.CreateLiteralNode(e.NewValue.ToString(), new Uri("xsd:attributeValue"))));
         }
 
         private void createDatapointOnEntity(Entity e)
@@ -72,7 +111,7 @@ namespace ECA2LD.Datapoints
             completeGraph.RDFGraph.Merge(e.GetDatapoint().graph.GetMergedGraph());
         }
 
-        protected override void onGet(object sender, HttpEventArgs e)
+        public override void onGet(object sender, HttpEventArgs e)
         {
             if (e.request.QueryString.Get("query") != null)
                 onSparql(e);
@@ -127,7 +166,7 @@ namespace ECA2LD.Datapoints
         /// The local EntityCollection is aware of more entities, which are hosted on remote hosts, but of which data is
         /// not present in the local dataset.
         /// </summary>
-        protected override void onPost(object sender, HttpEventArgs e)
+        public override void onPost(object sender, HttpEventArgs e)
         {
             e.response.StatusCode = 201;
             string returnMessage = "Object created";

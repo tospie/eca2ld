@@ -60,7 +60,7 @@ namespace ECA2LD.ldp_ttl
         {
             foreach (Component c in e.Components)
             {
-                var componentUri = new Uri(dp_uri.TrimEnd('/') + "/" + c.Name);
+                var componentUri = new Uri(dp_uri.TrimEnd('/') + "/" + c.Name + "/");
                 RDFGraph.Assert(new Triple(un, DCT_HAS_PART, RDFGraph.CreateUriNode(componentUri)));
             }
         }

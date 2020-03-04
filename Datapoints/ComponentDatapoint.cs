@@ -34,17 +34,28 @@ namespace ECA2LD.Datapoints
 
         public static void SetDatapoint(this Component component, ComponentDatapoint datapoint)
         {
-            datapoints.Add(component.Guid, datapoint);
+            lock(datapoints)
+                datapoints.Add(component.Guid, datapoint);
         }
 
         public static ComponentDatapoint GetDatapoint(this Component component)
         {
-            return datapoints[component.Guid];
+            if (!component.HasDatapoint())
+            {
+                Console.WriteLine("WARNING: NO DATAPOINT FOUND FOR COMPONENT {0}:{1}\n{2}",
+                    component.ContainingEntity.Guid,
+                    component.Name,
+                    new System.Diagnostics.StackTrace().ToString());
+                return null;
+            }
+            lock(datapoints)
+                return datapoints[component.Guid];
         }
 
         public static bool HasDatapoint(this Component component)
         {
-            return datapoints.ContainsKey(component.Guid);
+            lock(datapoints)
+                return datapoints.ContainsKey(component.Guid);
         }
     }
 
@@ -66,16 +77,29 @@ namespace ECA2LD.Datapoints
             component.SetDatapoint(this);
             try
             {
-                new ComponentPrototypeDatapoint(component.Prototype, new Uri(uri).getPrototypeBaseUri() + component.Name + "/");
+                lock (ComponentPrototypeManager.RegisteredPrototypes)
+                    if (!ComponentPrototypeManager.RegisteredPrototypes.ContainsKey(component.Prototype.Name))
+                    {
+                        ComponentPrototypeManager.RegisteredPrototypes.Add(component.Prototype.Name,
+                               new ComponentPrototypeDatapoint(component.Prototype, new Uri(uri).getPrototypeBaseUri() + component.Name + "/"));
+                    }
+
             }
             catch (HttpListenerException) { }
             foreach (AttributePrototype a in component.Prototype.AttributePrototypes)
             {
-                new AttributeDatapoint(component[a.Name], uri.TrimEnd('/') + "/" + a.Name);
+                try
+                {
+                    new AttributeDatapoint(component[a.Name], uri.TrimEnd('/') + "/" + a.Name);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("[ECA2LD.Datapoints.ComponentDatapoint] FAILED to create Attribute Datapoint: {0}", e.Message);
+                }
             }
         }
 
-        protected override void onGet(object sender, HttpEventArgs e)
+        public override void onGet(object sender, HttpEventArgs e)
         {
             string graphAsTTL = graph.GetTTL();
             e.response.OutputStream.Write(Encoding.UTF8.GetBytes(graphAsTTL), 0, graphAsTTL.Length);
@@ -83,17 +107,17 @@ namespace ECA2LD.Datapoints
             e.response.OutputStream.Close();
         }
 
-        protected override void onOptions(object sender, HttpEventArgs e)
+        public override void onOptions(object sender, HttpEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        protected override void onPost(object sender, HttpEventArgs e)
+        public override void onPost(object sender, HttpEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        protected override void onPut(object sender, HttpEventArgs e)
+        public override void onPut(object sender, HttpEventArgs e)
         {
             PutHandler.handleRequest(e, Route, processReceivedGraph);
         }

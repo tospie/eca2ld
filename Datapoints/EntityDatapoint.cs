@@ -17,6 +17,7 @@ using LDPDatapoints;
 using LDPDatapoints.Resources;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,17 +35,27 @@ namespace ECA2LD.Datapoints
 
         public static void SetDatapoint(this Entity entity, EntityDatapoint datapoint)
         {
-            datapoints.Add(entity.Guid, datapoint);
+            lock (datapoints)
+                datapoints.Add(entity.Guid, datapoint);
         }
 
         public static EntityDatapoint GetDatapoint(this Entity entity)
         {
-            return datapoints[entity.Guid];
+            if (!entity.HasDatapoint())
+            {
+                Console.WriteLine("WARNING: NO DATAPOINT FOUND FOR ENTITY {0}\n{1}",
+                    entity.Guid,
+                    new StackTrace().ToString());
+                return null;
+            }
+            lock (datapoints)
+                return datapoints[entity.Guid];
         }
 
         public static bool HasDatapoint(this Entity entity)
         {
-            return datapoints.ContainsKey(entity.Guid);
+            lock (datapoints)
+                return datapoints.ContainsKey(entity.Guid);
         }
     }
 
@@ -67,7 +78,7 @@ namespace ECA2LD.Datapoints
         }
 
 
-        protected override void onGet(object sender, HttpEventArgs e)
+        public override void onGet(object sender, HttpEventArgs e)
         {
             string graphAsTTL = graph.GetTTL();
             e.response.OutputStream.Write(Encoding.UTF8.GetBytes(graphAsTTL), 0, graphAsTTL.Length);
@@ -75,17 +86,17 @@ namespace ECA2LD.Datapoints
             e.response.OutputStream.Close();
         }
 
-        protected override void onOptions(object sender, HttpEventArgs e)
+        public override void onOptions(object sender, HttpEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        protected override void onPost(object sender, HttpEventArgs e)
+        public override void onPost(object sender, HttpEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        protected override void onPut(object sender, HttpEventArgs e)
+        public override void onPut(object sender, HttpEventArgs e)
         {
             PutHandler.handleRequest(e, Route, processReceivedGraph);
         }
